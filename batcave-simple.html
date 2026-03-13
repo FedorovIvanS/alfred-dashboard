@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦇 Дворец Бэтмена - Альфред</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            border: 2px solid #0a0;
+            padding: 20px;
+            border-radius: 10px;
+            background: #001100;
+        }
+        h1 {
+            color: #0f0;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #0f0;
+        }
+        .scene {
+            background: #000811;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            min-height: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+        .cave {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: radial-gradient(circle at 30% 30%, #002244 0%, #000811 100%);
+        }
+        .alfred {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 120px;
+            background: #333;
+            border-radius: 30px 30px 0 0;
+        }
+        .alfred-head {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            bottom: 120px;
+            left: 10px;
+            background: #f5deb3;
+            border-radius: 50%;
+        }
+        .monitor {
+            position: absolute;
+            width: 150px;
+            height: 100px;
+            background: #001100;
+            border: 2px solid #0a0;
+            border-radius: 5px;
+            color: #0f0;
+            padding: 10px;
+            font-size: 12px;
+            text-align: left;
+        }
+        .monitor1 { top: 20px; left: 20px; }
+        .monitor2 { top: 20px; right: 20px; }
+        .monitor3 { bottom: 150px; left: 50%; transform: translateX(-50%); }
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        button {
+            background: #0a0;
+            color: #000;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover { background: #0f0; }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(0, 40, 0, 0.5);
+            border-radius: 5px;
+        }
+        .log {
+            text-align: left;
+            margin-top: 20px;
+            padding: 10px;
+            background: rgba(0, 20, 0, 0.5);
+            border-radius: 5px;
+            max-height: 100px;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🦇 ДВОРЕЦ БЭТМЕНА - АЛЬФРЕД</h1>
+        
+        <div class="scene">
+            <div class="cave"></div>
+            <div class="monitor monitor1">
+                > СИСТЕМНЫЙ СТАТУС<br>
+                > Альфред: ОНЛАЙН<br>
+                > Токены: 42,857<br>
+                > Стоимость: $0.000012
+            </div>
+            <div class="monitor monitor2">
+                > АКТИВНЫЕ ЗАДАЧИ<br>
+                > Панель: ✓<br>
+                > Telegram: ✓<br>
+                > Мониторинг: ✓
+            </div>
+            <div class="monitor monitor3">
+                > РЕЖИМ: <span id="modeDisplay">РАБОТАЕТ</span><br>
+                > ДЕЙСТВИЕ: <span id="actionDisplay">Печатает отчёт</span>
+            </div>
+            <div class="alfred" id="alfred">
+                <div class="alfred-head"></div>
+            </div>
+        </div>
+        
+        <div class="status">
+            Альфред: <span id="statusText">РАБОТАЕТ ЗА КОМПЬЮТЕРОМ</span>
+        </div>
+        
+        <div class="controls">
+            <button onclick="setMode('work')">🖥️ РАБОТАТЬ</button>
+            <button onclick="setMode('wait')">⏳ ЖДАТЬ</button>
+            <button onclick="setMode('patrol')">🚶 ПАТРУЛИРОВАТЬ</button>
+            <button onclick="toggleLights()">💡 СВЕТ</button>
+            <button onclick="window.open('index.html', '_blank')">📊 ПАНЕЛЬ</button>
+            <button onclick="window.open('token-monitoring.html', '_blank')">💰 ТОКЕНЫ</button>
+            <button onclick="closeApp()" style="background:#a00;">✖️ ЗАКРЫТЬ</button>
+        </div>
+        
+        <div class="log" id="log">
+            [20:40] Альфред прибыл в пещеру<br>
+            [20:41] Начал работу за компьютером
+        </div>
+    </div>
+
+    <script>
+        let mode = 'work';
+        let lights = true;
+        let logEntries = [
+            '[20:40] Альфред прибыл в пещеру',
+            '[20:41] Начал работу за компьютером'
+        ];
+        
+        function setMode(newMode) {
+            mode = newMode;
+            const alfred = document.getElementById('alfred');
+            const status = document.getElementById('statusText');
+            const modeDisplay = document.getElementById('modeDisplay');
+            const actionDisplay = document.getElementById('actionDisplay');
+            
+            // Сбрасываем анимации
+            alfred.style.animation = '';
+            
+            if (newMode === 'work') {
+                status.textContent = 'РАБОТАЕТ ЗА КОМПЬЮТЕРОМ';
+                modeDisplay.textContent = 'РАБОТАЕТ';
+                actionDisplay.textContent = 'Печатает отчёт';
+                alfred.style.animation = 'work 0.5s infinite alternate';
+                addLog('начал работать за компьютером');
+            } else if (newMode === 'wait') {
+                status.textContent = 'ОЖИДАЕТ У ВХОДА';
+                modeDisplay.textContent = 'ОЖИДАЕТ';
+                actionDisplay.textContent = 'Смотрит по сторонам';
+                alfred.style.animation = 'wait 3s infinite';
+                addLog('перешёл в режим ожидания');
+            } else if (newMode === 'patrol') {
+                status.textContent = 'ПАТРУЛИРУЕТ ПЕЩЕРУ';
+                modeDisplay.textContent = 'ПАТРУЛИРУЕТ';
+                actionDisplay.textContent = 'Обходит территорию';
+                alfred.style.animation = 'patrol 2s infinite alternate';
+                addLog('начал патрулирование пещеры');
+            }
+        }
+        
+        function toggleLights() {
+            lights = !lights;
+            const scene = document.querySelector('.scene');
+            if (lights) {
+                scene.style.filter = 'brightness(1)';
+                addLog('включил освещение');
+            } else {
+                scene.style.filter = 'brightness(0.3)';
+                addLog('выключил освещение (ночной режим)');
+            }
+        }
+        
+        function addLog(action) {
+            const now = new Date();
+            const time = now.getHours().toString().padStart(2, '0') + ':' + 
+                        now.getMinutes().toString().padStart(2, '0');
+            const entry = `[${time}] Альфред ${action}`;
+            logEntries.push(entry);
+            
+            // Ограничиваем 5 записями
+            if (logEntries.length > 5) {
+                logEntries.shift();
+            }
+            
+            // Обновляем лог
+            document.getElementById('log').innerHTML = logEntries.join('<br>');
+        }
+        
+        function closeApp() {
+            if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.close();
+            } else {
+                window.history.back();
+            }
+        }
+        
+        // Автоматические действия
+        setInterval(() => {
+            const actions = [
+                'проверяет мониторы',
+                'обновляет данные',
+                'проверяет оборудование',
+                'готовит отчёт',
+                'анализирует логи'
+            ];
+            
+            if (mode === 'work') {
+                const action = actions[Math.floor(Math.random() * actions.length)];
+                document.getElementById('actionDisplay').textContent = action;
+            }
+        }, 5000);
+        
+        // CSS анимации
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes work {
+                0% { transform: translateX(-50%) translateY(0); }
+                100% { transform: translateX(-50%) translateY(-5px); }
+            }
+            @keyframes wait {
+                0%, 100% { transform: translateX(-50%) rotate(0deg); }
+                25% { transform: translateX(-50%) rotate(5deg); }
+                75% { transform: translateX(-50%) rotate(-5deg); }
+            }
+            @keyframes patrol {
+                0% { transform: translateX(-50%); }
+                100% { transform: translateX(calc(-50% + 50px)); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.ready();
+                Telegram.WebApp.expand();
+            }
+            setMode('work');
+        });
+    </script>
+</body>
+</html>
