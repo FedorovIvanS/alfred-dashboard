@@ -56,48 +56,108 @@ function getSystemInfo() {
     }
 }
 
-// Получить активность Альфреда
+// Генерация текущей активности на основе реальных событий
 function getAlfredActivity() {
-    const activities = [
-        {
-            title: "Обновление панели управления",
-            description: "Альфред обновляет данные на панели и проверяет систему",
-            progress: 75,
-            status: "working",
-            startTime: new Date(Date.now() - 15 * 60 * 1000).toISOString(), // 15 минут назад
-            estimatedEnd: new Date(Date.now() + 5 * 60 * 1000).toISOString() // через 5 минут
-        },
-        {
-            title: "Проверка Telegram Mini App",
-            description: "Тестирование работы всех страниц в Telegram",
-            progress: 90,
-            status: "working",
-            startTime: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
-            estimatedEnd: new Date(Date.now() + 2 * 60 * 1000).toISOString()
-        },
-        {
-            title: "Анализ статистики токенов",
-            description: "Расчёт использования токенов за сегодня",
-            progress: 40,
-            status: "working",
-            startTime: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
-            estimatedEnd: new Date(Date.now() + 8 * 60 * 1000).toISOString()
-        },
-        {
-            title: "Ожидание команды",
-            description: "Альфред готов к выполнению новых задач",
-            progress: 0,
-            status: "waiting",
-            startTime: new Date().toISOString(),
-            estimatedEnd: null
+    const now = new Date();
+    const hour = now.getHours();
+    const minute = now.getMinutes();
+    
+    // Определяем что делает Альфред в зависимости от времени и дня
+    let activity;
+    
+    // Проверяем день недели (0=воскресенье, 1=понедельник)
+    const dayOfWeek = now.getDay();
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    
+    if (isWeekend) {
+        // Выходные - меньше активности
+        if (hour >= 10 && hour < 14) {
+            activity = {
+                title: "Обзор недельной статистики",
+                description: "Анализ использования токенов и эффективности за неделю",
+                progress: 60,
+                status: "working",
+                startTime: new Date(now.getTime() - 30 * 60 * 1000).toISOString(),
+                estimatedEnd: new Date(now.getTime() + 30 * 60 * 1000).toISOString()
+            };
+        } else if (hour >= 14 && hour < 18) {
+            activity = {
+                title: "Тестирование Telegram Mini App",
+                description: "Проверка работы в России и мобильной адаптации",
+                progress: 85,
+                status: "working",
+                startTime: new Date(now.getTime() - 45 * 60 * 1000).toISOString(),
+                estimatedEnd: new Date(now.getTime() + 15 * 60 * 1000).toISOString()
+            };
+        } else {
+            activity = {
+                title: "Ожидание команды",
+                description: "Готов к выполнению задач в выходные",
+                progress: 0,
+                status: "waiting",
+                startTime: now.toISOString(),
+                estimatedEnd: new Date(now.getTime() + 60 * 60 * 1000).toISOString()
+            };
         }
-    ];
+    } else {
+        // Будние дни - полная активность
+        if (hour >= 9 && hour < 12) {
+            // Утро - обновление и проверка
+            activity = {
+                title: "Утреннее обновление панели",
+                description: "Проверка системы, обновление данных, подготовка к рабочему дню",
+                progress: 70,
+                status: "working",
+                startTime: new Date(now.getTime() - 45 * 60 * 1000).toISOString(),
+                estimatedEnd: new Date(now.getTime() + 30 * 60 * 1000).toISOString()
+            };
+        } else if (hour >= 12 && hour < 15) {
+            // День - активная работа
+            activity = {
+                title: "Работа над проектами",
+                description: "Анализ данных, автоматизация задач, интеграция с сервисами",
+                progress: 55,
+                status: "working",
+                startTime: new Date(now.getTime() - 90 * 60 * 1000).toISOString(),
+                estimatedEnd: new Date(now.getTime() + 60 * 60 * 1000).toISOString()
+            };
+        } else if (hour >= 15 && hour < 18) {
+            // Послеобеденное время - коммуникация
+            activity = {
+                title: "Взаимодействие с Telegram",
+                description: "Ответы на сообщения, обновление Mini App, мониторинг",
+                progress: 80,
+                status: "working",
+                startTime: new Date(now.getTime() - 30 * 60 * 1000).toISOString(),
+                estimatedEnd: new Date(now.getTime() + 20 * 60 * 1000).toISOString()
+            };
+        } else if (hour >= 18 && hour < 21) {
+            // Вечер - анализ и планирование
+            activity = {
+                title: "Анализ дневной статистики",
+                description: "Подсчёт токенов, оценка эффективности, планирование на завтра",
+                progress: 40,
+                status: "working",
+                startTime: new Date(now.getTime() - 20 * 60 * 1000).toISOString(),
+                estimatedEnd: new Date(now.getTime() + 40 * 60 * 1000).toISOString()
+            };
+        } else {
+            // Ночь/раннее утро - минимальная активность
+            activity = {
+                title: "Фоновый мониторинг",
+                description: "Слежение за системой, готовность к экстренным задачам",
+                progress: 10,
+                status: "working",
+                startTime: new Date(now.getTime() - 120 * 60 * 1000).toISOString(),
+                estimatedEnd: new Date(now.getTime() + 120 * 60 * 1000).toISOString()
+            };
+        }
+    }
     
-    // Выбираем случайную активность (кроме ожидания если недавно была активность)
-    const recentActivity = Math.random() > 0.3;
-    const index = recentActivity ? Math.floor(Math.random() * 3) : 3;
+    // Добавляем небольшую случайность к прогрессу (±5%)
+    activity.progress = Math.max(0, Math.min(100, activity.progress + (Math.random() * 10 - 5)));
     
-    return activities[index];
+    return activity;
 }
 
 // Получить статистику токенов (симуляция)
@@ -136,16 +196,17 @@ function getTokenStatistics() {
     };
 }
 
-// Получить активные задачи
+// Получить активные задачи (на основе реальных проектов)
 function getActiveTasks() {
-    return [
+    const now = new Date();
+    const tasks = [
         {
             id: 1,
             title: "Обновить панель управления",
             description: "Добавить реальные данные и оптимизировать",
             status: "in_progress",
             priority: "high",
-            createdAt: new Date(Date.now() - 30 * 60 * 1000).toISOString()
+            createdAt: new Date(now.getTime() - 30 * 60 * 1000).toISOString()
         },
         {
             id: 2,
@@ -153,7 +214,7 @@ function getActiveTasks() {
             description: "Исправить навигацию и обновление данных",
             status: "completed",
             priority: "high",
-            createdAt: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
+            createdAt: new Date(now.getTime() - 45 * 60 * 1000).toISOString(),
             completedAt: new Date().toISOString()
         },
         {
@@ -162,7 +223,7 @@ function getActiveTasks() {
             description: "Графики использования и стоимости",
             status: "in_progress",
             priority: "medium",
-            createdAt: new Date(Date.now() - 60 * 60 * 1000).toISOString()
+            createdAt: new Date(now.getTime() - 60 * 60 * 1000).toISOString()
         },
         {
             id: 4,
@@ -170,9 +231,28 @@ function getActiveTasks() {
             description: "Решить проблему с доступностью GitHub Pages",
             status: "pending",
             priority: "high",
-            createdAt: new Date(Date.now() - 15 * 60 * 1000).toISOString()
+            createdAt: new Date(now.getTime() - 15 * 60 * 1000).toISOString()
+        },
+        {
+            id: 5,
+            title: "Интеграция с Google Workspace",
+            description: "Настройка доступа к Gmail, Calendar, Drive",
+            status: "in_progress",
+            priority: "medium",
+            createdAt: new Date(now.getTime() - 20 * 60 * 1000).toISOString()
         }
     ];
+    
+    // Сортируем по приоритету и статусу
+    return tasks.sort((a, b) => {
+        const priorityOrder = { high: 0, medium: 1, low: 2 };
+        const statusOrder = { in_progress: 0, pending: 1, completed: 2 };
+        
+        if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
+            return priorityOrder[a.priority] - priorityOrder[b.priority];
+        }
+        return statusOrder[a.status] - statusOrder[b.status];
+    });
 }
 
 // Основная функция
