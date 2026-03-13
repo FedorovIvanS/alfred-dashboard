@@ -1,0 +1,179 @@
+режима Альфреда
+        function setAlfredMode(mode) {
+            alfredMode = mode;
+            
+            // Удаляем предыдущие классы
+            alfredElement.classList.remove('working', 'waiting', 'patrol');
+            
+            // Добавляем новый класс
+            alfredElement.classList.add(mode);
+            
+            // Обновляем статус
+            const statusText = {
+                'working': 'РАБОТАЕТ',
+                'waiting': 'ОЖИДАЕТ',
+                'patrol': 'ПАТРУЛИРУЕТ'
+            }[mode] || 'НЕИЗВЕСТНО';
+            
+            alfredStatusElement.textContent = statusText;
+            modeDisplayElement.textContent = statusText;
+            
+            // Добавляем запись в лог
+            const now = new Date();
+            const timeStr = now.getHours().toString().padStart(2, '0') + ':' + 
+                           now.getMinutes().toString().padStart(2, '0');
+            
+            const actionText = {
+                'working': 'начал работать за компьютером (улучшенная анимация)',
+                'waiting': 'перешёл в режим ожидания (плавные движения)',
+                'patrol': 'начал патрулирование пещеры (реалистичная ходьба)'
+            }[mode];
+            
+            addToLog(`[${timeStr}] Альфред ${actionText}`);
+        }
+        
+        // Переключение деталей
+        function toggleDetails() {
+            showDetails = !showDetails;
+            const eyes = document.querySelectorAll('.eye');
+            
+            if (showDetails) {
+                eyes.forEach(eye => eye.style.display = 'block');
+                addToLog(`[${getTime()}] Включены детали анимации (глаза)`);
+            } else {
+                eyes.forEach(eye => eye.style.display = 'none');
+                addToLog(`[${getTime()}] Выключены детали анимации`);
+            }
+        }
+        
+        // Добавить запись в лог
+        function addToLog(message) {
+            activityLog.push(message);
+            
+            // Ограничиваем лог 10 записями
+            if (activityLog.length > 10) {
+                activityLog.shift();
+            }
+            
+            // Обновляем отображение
+            updateActivityLog();
+        }
+        
+        // Обновить лог активности
+        function updateActivityLog() {
+            activityLogElement.innerHTML = '';
+            
+            activityLog.forEach(entry => {
+                const div = document.createElement('div');
+                div.className = 'log-entry';
+                div.textContent = entry;
+                activityLogElement.appendChild(div);
+            });
+            
+            // Прокручиваем вниз
+            activityLogElement.scrollTop = activityLogElement.scrollHeight;
+        }
+        
+        // Получить текущее время
+        function getTime() {
+            const now = new Date();
+            return now.getHours().toString().padStart(2, '0') + ':' + 
+                   now.getMinutes().toString().padStart(2, '0');
+        }
+        
+        // Автоматические действия Альфреда
+        function alfredAutoActions() {
+            const actions = [
+                'проверяет системные мониторы',
+                'обновляет статистику токенов',
+                'настраивает анимацию',
+                'тестирует плавность движений',
+                'проверяет детализацию'
+            ];
+            
+            // Случайное действие каждые 30-60 секунд
+            setTimeout(() => {
+                if (alfredMode === 'working') {
+                    const action = actions[Math.floor(Math.random() * actions.length)];
+                    addToLog(`[${getTime()}] Альфред ${action}`);
+                }
+                
+                alfredAutoActions();
+            }, Math.random() * 30000 + 30000); // 30-60 секунд
+        }
+        
+        // Автоматическое переключение режимов
+        function autoSwitchModes() {
+            setTimeout(() => {
+                if (Math.random() > 0.7) {
+                    const modes = ['working', 'waiting', 'patrol'];
+                    const newMode = modes[Math.floor(Math.random() * modes.length)];
+                    setAlfredMode(newMode);
+                }
+                
+                autoSwitchModes();
+            }, 120000); // Каждые 2 минуты
+        }
+        
+        // Инициализация Telegram Web App
+        function initTelegramWebApp() {
+            if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.ready();
+                Telegram.WebApp.expand();
+                
+                // Меняем заголовок
+                document.title = "🦇 Дворец Бэтмена - Улучшенная анимация";
+                
+                // Отправляем данные в Telegram
+                Telegram.WebApp.sendData(JSON.stringify({
+                    action: 'improved_animation_loaded',
+                    timestamp: new Date().toISOString()
+                }));
+            }
+        }
+        
+        // Закрыть сцену
+        function closeScene() {
+            addToLog(`[${getTime()}] Альфред завершает работу`);
+            
+            if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.close();
+            } else {
+                alert('Сцена закрыта. Альфред вернётся позже!');
+                window.history.back();
+            }
+        }
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            initTelegramWebApp();
+            alfredAutoActions();
+            autoSwitchModes();
+            
+            // Начинаем в режиме работы
+            setAlfredMode('working');
+            
+            // Обновляем лог
+            updateActivityLog();
+            
+            // Добавляем CSS для плавных переходов
+            const style = document.createElement('style');
+            style.textContent = `
+                .alfred-head, .alfred-arm, .alfred-leg {
+                    transition: all 0.3s ease;
+                }
+                
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                
+                .monitor {
+                    animation: fadeIn 0.5s ease-out;
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
