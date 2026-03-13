@@ -1,0 +1,241 @@
+            </button>
+            
+            <button class="control-button" onclick="showDashboard()">
+                📊 ОТКРЫТЬ ПАНЕЛЬ
+            </button>
+            
+            <button class="control-button" onclick="showTokenMonitoring()">
+                💰 МОНИТОРИНГ ТОКЕНОВ
+            </button>
+            
+            <button class="control-button" onclick="closeScene()" style="background: #a00;">
+                ✖️ ЗАКРЫТЬ
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Состояние Альфреда
+        let alfredMode = 'working';
+        let lightsOn = true;
+        let activityLog = [
+            "[20:49] Альфред прибыл в пещеру",
+            "[20:50] Проверка системных мониторов",
+            "[20:51] Обновление данных панели"
+        ];
+        
+        // Элементы
+        const alfredElement = document.getElementById('alfred');
+        const alfredStatusElement = document.getElementById('alfredStatus');
+        const activityLogElement = document.getElementById('activityLog');
+        const sceneElement = document.getElementById('batcaveScene');
+        
+        // Установка режима Альфреда
+        function setAlfredMode(mode) {
+            alfredMode = mode;
+            
+            // Удаляем предыдущие классы
+            alfredElement.classList.remove('working', 'waiting', 'patrol');
+            
+            // Добавляем новый класс
+            alfredElement.classList.add(mode);
+            
+            // Обновляем статус
+            const statusText = {
+                'working': 'РАБОТАЕТ',
+                'waiting': 'ОЖИДАЕТ',
+                'patrol': 'ПАТРУЛИРУЕТ'
+            }[mode] || 'НЕИЗВЕСТНО';
+            
+            alfredStatusElement.textContent = statusText;
+            
+            // Добавляем запись в лог
+            const now = new Date();
+            const timeStr = now.getHours().toString().padStart(2, '0') + ':' + 
+                           now.getMinutes().toString().padStart(2, '0');
+            
+            const actionText = {
+                'working': 'начал работать за компьютером',
+                'waiting': 'перешёл в режим ожидания',
+                'patrol': 'начал патрулирование пещеры'
+            }[mode];
+            
+            addToLog(`[${timeStr}] Альфред ${actionText}`);
+        }
+        
+        // Переключение освещения
+        function toggleLights() {
+            lightsOn = !lightsOn;
+            
+            if (lightsOn) {
+                sceneElement.style.filter = 'brightness(1)';
+                addToLog(`[${getTime()}] Освещение включено`);
+            } else {
+                sceneElement.style.filter = 'brightness(0.3)';
+                addToLog(`[${getTime()}] Освещение выключено (ночной режим)`);
+            }
+        }
+        
+        // Показать основную панель
+        function showDashboard() {
+            addToLog(`[${getTime()}] Открытие основной панели управления`);
+            window.open('index-on-demand.html', '_blank');
+        }
+        
+        // Показать мониторинг токенов
+        function showTokenMonitoring() {
+            addToLog(`[${getTime()}] Открытие мониторинга токенов`);
+            window.open('token-monitoring.html', '_blank');
+        }
+        
+        // Закрыть сцену
+        function closeScene() {
+            addToLog(`[${getTime()}] Альфред покидает пещеру`);
+            
+            if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.close();
+            } else {
+                alert('Сцена закрыта. Альфред вернётся позже!');
+                window.history.back();
+            }
+        }
+        
+        // Добавить запись в лог
+        function addToLog(message) {
+            activityLog.push(message);
+            
+            // Ограничиваем лог 10 записями
+            if (activityLog.length > 10) {
+                activityLog.shift();
+            }
+            
+            // Обновляем отображение
+            updateActivityLog();
+        }
+        
+        // Обновить лог активности
+        function updateActivityLog() {
+            activityLogElement.innerHTML = '';
+            
+            activityLog.forEach(entry => {
+                const div = document.createElement('div');
+                div.className = 'log-entry';
+                div.textContent = entry;
+                activityLogElement.appendChild(div);
+            });
+            
+            // Прокручиваем вниз
+            activityLogElement.scrollTop = activityLogElement.scrollHeight;
+        }
+        
+        // Получить текущее время
+        function getTime() {
+            const now = new Date();
+            return now.getHours().toString().padStart(2, '0') + ':' + 
+                   now.getMinutes().toString().padStart(2, '0');
+        }
+        
+        // Автоматические действия Альфреда
+        function alfredAutoActions() {
+            const actions = [
+                'проверяет системные мониторы',
+                'обновляет статистику токенов',
+                'проверяет состояние сети',
+                'анализирует логи активности',
+                'готовит отчёт о работе',
+                'проверяет оборудование пещеры',
+                'мониторит внешние каналы связи'
+            ];
+            
+            // Случайное действие каждые 30-60 секунд
+            setTimeout(() => {
+                if (alfredMode === 'working') {
+                    const action = actions[Math.floor(Math.random() * actions.length)];
+                    addToLog(`[${getTime()}] Альфред ${action}`);
+                }
+                
+                alfredAutoActions();
+            }, Math.random() * 30000 + 30000); // 30-60 секунд
+        }
+        
+        // Анимация мониторов
+        function animateMonitors() {
+            const monitors = document.querySelectorAll('.screen-content');
+            
+            monitors.forEach((monitor, index) => {
+                // Сбрасываем анимацию
+                monitor.style.animation = 'none';
+                
+                setTimeout(() => {
+                    monitor.style.animation = `scrollText ${20 + index * 5}s linear infinite`;
+                }, 10);
+            });
+        }
+        
+        // Создать дополнительные сталактиты/сталагмиты
+        function createCaveFormations() {
+            const scene = document.querySelector('.scene');
+            
+            // Создаём 10 случайных сталактитов
+            for (let i = 0; i < 10; i++) {
+                const stalactite = document.createElement('div');
+                stalactite.className = 'stalactite';
+                stalactite.style.top = `${Math.random() * 50}px`;
+                stalactite.style.left = `${Math.random() * 100}%`;
+                stalactite.style.height = `${Math.random() * 30 + 20}px`;
+                scene.appendChild(stalactite);
+            }
+            
+            // Создаём 10 случайных сталагмитов
+            for (let i = 0; i < 10; i++) {
+                const stalagmite = document.createElement('div');
+                stalagmite.className = 'stalagmite';
+                stalagmite.style.bottom = `${Math.random() * 100 + 50}px`;
+                stalagmite.style.left = `${Math.random() * 100}%`;
+                stalagmite.style.height = `${Math.random() * 40 + 20}px`;
+                scene.appendChild(stalagmite);
+            }
+        }
+        
+        // Инициализация Telegram Web App
+        function initTelegramWebApp() {
+            if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.ready();
+                Telegram.WebApp.expand();
+                
+                // Меняем заголовок
+                document.title = "🦇 Дворец Бэтмена - Альфред";
+                
+                // Отправляем данные в Telegram
+                Telegram.WebApp.sendData(JSON.stringify({
+                    action: 'batcave_loaded',
+                    timestamp: new Date().toISOString()
+                }));
+            }
+        }
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            initTelegramWebApp();
+            createCaveFormations();
+            animateMonitors();
+            alfredAutoActions();
+            
+            // Начинаем в режиме работы
+            setAlfredMode('working');
+            
+            // Автоматическое переключение режимов
+            setInterval(() => {
+                if (Math.random() > 0.7) {
+                    const modes = ['working', 'waiting', 'patrol'];
+                    const newMode = modes[Math.floor(Math.random() * modes.length)];
+                    setAlfredMode(newMode);
+                }
+            }, 120000); // Каждые 2 минуты
+            
+            // Обновляем время в логе
+            updateActivityLog();
+        });
+    </script>
+</body>
+</html>
