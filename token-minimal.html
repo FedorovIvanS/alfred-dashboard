@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💰 Мониторинг токенов</title>
+    <style>
+        body { background:#000; color:#0f0; font-family:'Courier New'; padding:20px; }
+        .container { max-width:600px; margin:0 auto; border:2px solid #0a0; padding:20px; background:#001100; }
+        h1 { color:#0f0; text-align:center; }
+        .stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:20px 0; }
+        .stat { background:#003300; padding:15px; text-align:center; border:1px solid #0a0; }
+        .stat-value { font-size:24px; font-weight:bold; color:#ff0; }
+        button { background:#0a0; color:#000; border:none; padding:10px; margin:5px; font-family:'Courier New'; font-weight:bold; width:100%; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💰 МОНИТОРИНГ ТОКЕНОВ АЛЬФРЕДА</h1>
+        
+        <div class="stat-grid">
+            <div class="stat">
+                <div>ТОКЕНОВ СЕГОДНЯ</div>
+                <div class="stat-value" id="todayTokens">11,403</div>
+                <div id="todayCost">$0.003193</div>
+            </div>
+            <div class="stat">
+                <div>ТОКЕНОВ ЗА НЕДЕЛЮ</div>
+                <div class="stat-value" id="weekTokens">85,000</div>
+                <div id="weekCost">$0.0238</div>
+            </div>
+        </div>
+        
+        <div style="background:#002200; padding:15px; margin:20px 0; border:1px solid #0a0;">
+            <h3>📈 ГРАФИК ИСПОЛЬЗОВАНИЯ (СЕГОДНЯ)</h3>
+            <div style="height:100px; background:#001100; border:1px solid #0a0; padding:10px;">
+                <div id="chart" style="display:flex; height:80px; align-items:flex-end; gap:5px;">
+                    <!-- График будет здесь -->
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin:20px 0;">
+            <button onclick="loadData()">🔄 ОБНОВИТЬ ДАННЫЕ</button>
+            <button onclick="window.open('index-minimal.html')">📊 ОСНОВНАЯ ПАНЕЛЬ</button>
+            <button onclick="window.open('batcave-simple.html')">🏰 ДВОРЕЦ БЭТМЕНА</button>
+            <button onclick="closeApp()" style="background:#a00;">✖️ ЗАКРЫТЬ</button>
+        </div>
+        
+        <div style="text-align:center; font-size:12px; color:#8f8; margin-top:20px;">
+            <p>🦇 Альфред • Мониторинг токенов • Обновление по запросу</p>
+            <p id="status">Данные загружены: только что</p>
+        </div>
+    </div>
+
+    <script>
+        async function loadData() {
+            document.getElementById('status').textContent = 'Загрузка данных...';
+            
+            try {
+                const response = await fetch('https://raw.githubusercontent.com/FedorovIvanS/alfred-dashboard/main/data.json?t=' + Date.now());
+                const data = await response.json();
+                
+                if (data.tokenStatistics) {
+                    // Сегодня
+                    document.getElementById('todayTokens').textContent = 
+                        data.tokenStatistics.today.totalTokens.toLocaleString();
+                    document.getElementById('todayCost').textContent = 
+                        '$' + data.tokenStatistics.today.cost.toFixed(6);
+                    
+                    // Неделя (примерно)
+                    const weekTokens = data.tokenStatistics.today.totalTokens * 7;
+                    const weekCost = data.tokenStatistics.today.cost * 7;
+                    document.getElementById('weekTokens').textContent = 
+                        Math.round(weekTokens / 1000) + 'K';
+                    document.getElementById('weekCost').textContent = 
+                        '$' + weekCost.toFixed(6);
+                    
+                    // График
+                    updateChart(data.tokenStatistics.today.totalTokens);
+                }
+                
+                document.getElementById('status').textContent = 'Данные загружены: ' + new Date().toLocaleTimeString();
+                showMsg('✅ Данные обновлены!');
+                
+            } catch (error) {
+                document.getElementById('status').textContent = 'Ошибка загрузки данных';
+                showMsg('⚠️ Ошибка загрузки');
+            }
+        }
+        
+        function updateChart(todayTokens) {
+            const chart = document.getElementById('chart');
+            chart.innerHTML = '';
+            
+            // Создаём простой график
+            const hours = 24;
+            const max = todayTokens;
+            
+            for (let i = 0; i < hours; i++) {
+                const bar = document.createElement('div');
+                const height = (i < new Date().getHours()) ? 
+                    Math.random() * 80 + 20 : 5;
+                
+                bar.style.cssText = `
+                    flex:1;
+                    height:${height}%;
+                    background:linear-gradient(to top, #0a0, #0f0);
+                    min-width:3px;
+                `;
+                chart.appendChild(bar);
+            }
+        }
+        
+        function showMsg(text) {
+            const msg = document.createElement('div');
+            msg.textContent = text;
+            msg.style.cssText = 'position:fixed; top:20px; right:20px; background:#0a0; color:#000; padding:10px; z-index:1000;';
+            document.body.appendChild(msg);
+            setTimeout(() => msg.remove(), 3000);
+        }
+        
+        function closeApp() {
+            if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.close();
+            } else {
+                window.history.back();
+            }
+        }
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.ready();
+                Telegram.WebApp.expand();
+            }
+            loadData();
+            updateChart(11403);
+        });
+    </script>
+</body>
+</html>
