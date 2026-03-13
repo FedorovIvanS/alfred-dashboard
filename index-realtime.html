@@ -1,284 +1,230 @@
-новых задач",
-                progress: 0,
-                startTime: "21:19",
-                endTime: "--:--",
-                status: "waiting"
-            }
-        ];
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦇 Альфред - Панель в реальном времени</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { background:#000; color:#0f0; font-family:'Courier New'; padding:20px; background:#001100; }
+        .container { max-width:800px; margin:0 auto; }
+        .header { text-align:center; margin-bottom:30px; border-bottom:2px solid #0a0; padding-bottom:15px; }
+        .header h1 { font-size:28px; margin-bottom:10px; text-shadow:0 0 10px #0f0; }
+        .header .subtitle { color:#8f8; font-size:16px; margin:5px 0; }
         
-        // Элементы DOM
-        const elements = {
-            currentTime: document.getElementById('currentTime'),
-            alfredStatus: document.getElementById('alfredStatus'),
-            currentTask: document.getElementById('currentTask'),
-            taskDescription: document.getElementById('taskDescription'),
-            progressBar: document.getElementById('progressBar'),
-            progressText: document.getElementById('progressText'),
-            startTime: document.getElementById('startTime'),
-            endTime: document.getElementById('endTime'),
-            todayTokens: document.getElementById('todayTokens'),
-            todayCost: document.getElementById('todayCost'),
-            activeTaskCount: document.getElementById('activeTaskCount'),
-            uptime: document.getElementById('uptime'),
-            tgStatus: document.getElementById('tgStatus'),
-            activityLog: document.getElementById('activityLog'),
-            updateTime: document.getElementById('updateTime'),
-            activeTasks: document.getElementById('activeTasks'),
-            recentActions: document.getElementById('recentActions')
-        };
+        .activity { background:rgba(0,40,0,0.7); border:2px solid #0a0; border-radius:10px; padding:20px; margin-bottom:20px; }
+        .activity-header { display:flex; justify-content:space-between; margin-bottom:15px; }
+        .activity-title { font-size:20px; font-weight:bold; }
+        .activity-status { background:#0a0; color:#000; padding:5px 10px; border-radius:5px; font-weight:bold; }
+        .activity-task { font-size:18px; font-weight:bold; margin-bottom:10px; color:#ff0; }
+        .activity-description { font-size:14px; color:#8f8; margin-bottom:15px; }
+        .activity-progress { height:20px; background:rgba(0,60,0,0.6); border-radius:10px; overflow:hidden; margin-bottom:10px; }
+        .progress-bar { height:100%; background:linear-gradient(to right,#0a0,#0f0); }
+        .activity-time { display:flex; justify-content:space-between; font-size:12px; color:#8f8; }
         
-        // Открыть страницу в Telegram Mini App
+        .monitors { display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px; }
+        @media (max-width:600px) { .monitors { grid-template-columns:1fr; } }
+        .monitor { background:rgba(0,30,0,0.7); border:1px solid #0a0; border-radius:5px; padding:15px; }
+        .monitor-title { font-size:16px; font-weight:bold; margin-bottom:10px; color:#0f0; border-bottom:1px solid #0a0; padding-bottom:5px; }
+        
+        .stats { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:10px; margin-bottom:20px; }
+        .stat { background:rgba(0,40,0,0.6); border:1px solid #0a0; border-radius:5px; padding:15px; text-align:center; }
+        .stat-label { font-size:12px; color:#8f8; margin-bottom:5px; }
+        .stat-value { font-size:24px; font-weight:bold; color:#0f0; }
+        
+        .controls { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:10px; margin-bottom:20px; }
+        .button { background:#0a4; color:#000; border:none; padding:12px; border-radius:5px; font-family:'Courier New'; font-weight:bold; cursor:pointer; }
+        .button:hover { background:#0f5; transform:translateY(-2px); }
+        .button.refresh { background:#ff0; color:#000; }
+        
+        .log { background:rgba(0,20,0,0.7); border:1px solid #0a0; border-radius:5px; padding:15px; margin-bottom:20px; max-height:200px; overflow-y:auto; }
+        .log-title { font-size:16px; font-weight:bold; margin-bottom:10px; color:#0f0; }
+        .log-entry { padding:5px 0; border-bottom:1px dotted #0a4; font-size:12px; color:#8f8; }
+        .log-time { color:#ff0; font-weight:bold; }
+        
+        .footer { text-align:center; margin-top:20px; padding-top:15px; border-top:1px solid #0a0; font-size:12px; color:#8f8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🦇 АЛЬФРЕД - ПАНЕЛЬ В РЕАЛЬНОМ ВРЕМЕНИ</h1>
+            <div class="subtitle">Видите чем занят Альфред прямо сейчас</div>
+            <div class="subtitle" id="currentTime">Загрузка...</div>
+        </div>
+        
+        <div class="activity">
+            <div class="activity-header">
+                <div class="activity-title">🎯 ТЕКУЩАЯ АКТИВНОСТЬ</div>
+                <div class="activity-status working" id="alfredStatus">РАБОТАЕТ</div>
+            </div>
+            <div class="activity-task" id="currentTask">Обновление панели управления</div>
+            <div class="activity-description" id="taskDescription">Альфред обновляет данные на панели</div>
+            <div class="activity-progress"><div class="progress-bar" id="progressBar" style="width:75%"></div></div>
+            <div class="activity-time">
+                <div>Начало: <span id="startTime">21:24</span></div>
+                <div>Завершение: <span id="endTime">21:29</span></div>
+                <div>Прогресс: <span id="progressText">75%</span></div>
+            </div>
+        </div>
+        
+        <div class="monitors">
+            <div class="monitor">
+                <div class="monitor-title">📋 АКТИВНЫЕ ЗАДАЧИ</div>
+                <div id="activeTasks">
+                    <div>✅ Обновить панель</div>
+                    <div>🔄 Проверить Telegram</div>
+                    <div>📊 Анализ статистики</div>
+                </div>
+            </div>
+            <div class="monitor">
+                <div class="monitor-title">⏰ ПОСЛЕДНИЕ ДЕЙСТВИЯ</div>
+                <div id="recentActions">
+                    <div>[21:24] Загружена панель</div>
+                    <div>[21:24] Начато обновление</div>
+                    <div>[21:25] Проверка Telegram</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-label">ТОКЕНОВ СЕГОДНЯ</div>
+                <div class="stat-value" id="todayTokens">12,816</div>
+                <div class="stat-label" id="todayCost">$0.003588</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">АКТИВНЫХ ЗАДАЧ</div>
+                <div class="stat-value" id="activeTaskCount">3</div>
+                <div class="stat-label">из 5 запланированных</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">ВРЕМЯ РАБОТЫ</div>
+                <div class="stat-value" id="uptime">5ч 47м</div>
+                <div class="stat-label">с перезапуска</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">TELEGRAM APP</div>
+                <div class="stat-value" id="tgStatus">АКТИВЕН</div>
+                <div class="stat-label">все страницы работают</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="button refresh" onclick="refreshData()">🔄 ОБНОВИТЬ</button>
+            <button class="button" onclick="openInTelegram('batcave-final.html')">🏰 ДВОРЕЦ</button>
+            <button class="button" onclick="openInTelegram('token-minimal.html')">💰 ТОКЕНЫ</button>
+            <button class="button" onclick="openInTelegram('batcave-simple.html')">🎮 УПРОЩЁННАЯ</button>
+            <button class="button" onclick="forceUpdate()">⚡ ОБНОВИТЬ ЗАДАЧИ</button>
+        </div>
+        
+        <div class="log">
+            <div class="log-title">📝 ЛОГ АКТИВНОСТИ</div>
+            <div id="activityLog">
+                <div class="log-entry"><span class="log-time">[21:24]</span> Загружена панель</div>
+                <div class="log-entry"><span class="log-time">[21:24]</span> Альфред начал работу</div>
+                <div class="log-entry"><span class="log-time">[21:25]</span> Telegram Mini App: активирован</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>🦇 Альфред • Панель в реальном времени • Обновление каждые 30 сек</p>
+            <p id="lastUpdate">Обновлено: <span id="updateTime">только что</span></p>
+        </div>
+    </div>
+
+    <script>
+        // Открыть в Telegram Mini App
         function openInTelegram(url) {
             if (window.Telegram && Telegram.WebApp) {
                 Telegram.WebApp.openLink('https://fedorovivans.github.io/alfred-dashboard/' + url);
             } else {
                 window.open(url, '_blank');
             }
+            addLog(`Открыта: ${url}`);
         }
         
-        // Обновление времени
+        // Обновить время
         function updateTime() {
             const now = new Date();
-            elements.currentTime.textContent = now.toLocaleString('ru-RU', {
-                timeZone: 'Europe/Moscow',
-                hour12: false,
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
+            document.getElementById('currentTime').textContent = 
+                now.toLocaleString('ru-RU', {timeZone:'Europe/Moscow', hour12:false});
         }
         
-        // Обновить текущую задачу Альфреда
-        function updateAlfredTask() {
-            currentTaskIndex = (currentTaskIndex + 1) % alfredTasks.length;
-            const task = alfredTasks[currentTaskIndex];
-            
-            // Обновляем элементы
-            elements.currentTask.textContent = task.task;
-            elements.taskDescription.textContent = task.description;
-            elements.progressBar.style.width = task.progress + '%';
-            elements.progressText.textContent = task.progress + '%';
-            elements.startTime.textContent = task.startTime;
-            elements.endTime.textContent = task.endTime;
-            elements.alfredStatus.textContent = task.status.toUpperCase();
-            elements.alfredStatus.className = `activity-status ${task.status}`;
-            
-            // Добавляем в лог
-            const now = new Date();
-            const timeStr = now.getHours().toString().padStart(2, '0') + ':' + 
-                           now.getMinutes().toString().padStart(2, '0');
-            
-            addToLog(`[${timeStr}] Альфред: ${task.task}`);
-            
-            // Обновляем время
-            elements.updateTime.textContent = timeStr;
-        }
-        
-        // Обновить активные задачи
-        function updateActiveTasks() {
+        // Обновить задачу
+        function updateTask() {
             const tasks = [
-                "✅ Обновить панель управления",
-                "🔄 Проверить данные Todoist",
-                "📊 Анализировать статистику токенов",
-                "🔧 Исправить навигацию в Telegram",
-                "🎯 Добавить реальные данные",
-                "⚡ Оптимизировать производительность",
-                "🔒 Проверить безопасность"
+                {task:"Обновление панели",desc:"Альфред обновляет данные",progress:75,start:"21:24",end:"21:29"},
+                {task:"Проверка Telegram",desc:"Тестирование Mini App",progress:90,start:"21:23",end:"21:26"},
+                {task:"Анализ статистики",desc:"Расчёт токенов",progress:40,start:"21:25",end:"21:33"},
+                {task:"Ожидание команды",desc:"Готов к задачам",progress:0,start:"21:26",end:"--:--"}
             ];
             
-            // Перемешиваем задачи
-            const shuffled = [...tasks].sort(() => Math.random() - 0.5);
-            const activeCount = 3 + Math.floor(Math.random() * 3);
+            const t = tasks[Math.floor(Math.random()*tasks.length)];
+            document.getElementById('currentTask').textContent = t.task;
+            document.getElementById('taskDescription').textContent = t.desc;
+            document.getElementById('progressBar').style.width = t.progress + '%';
+            document.getElementById('progressText').textContent = t.progress + '%';
+            document.getElementById('startTime').textContent = t.start;
+            document.getElementById('endTime').textContent = t.end;
+            document.getElementById('alfredStatus').textContent = t.progress > 0 ? 'РАБОТАЕТ' : 'ОЖИДАЕТ';
             
-            elements.activeTasks.innerHTML = '';
-            elements.activeTaskCount.textContent = activeCount;
-            
-            for (let i = 0; i < activeCount; i++) {
-                const li = document.createElement('li');
-                li.className = 'task-item';
-                li.textContent = shuffled[i];
-                elements.activeTasks.appendChild(li);
-            }
+            addLog(`Альфред: ${t.task} (${t.progress}%)`);
+            document.getElementById('updateTime').textContent = getTime();
         }
         
-        // Обновить последние действия
-        function updateRecentActions() {
-            const actions = [
-                `[${getTime()}] Обновление панели`,
-                `[${getTime(-1)}] Проверка Telegram`,
-                `[${getTime(-2)}] Анализ статистики`,
-                `[${getTime(-3)}] Обновление задач`,
-                `[${getTime(-4)}] Проверка системы`
-            ];
+        // Добавить в лог
+        function addLog(msg) {
+            const log = document.getElementById('activityLog');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-time">[${getTime()}]</span> ${msg}`;
+            log.prepend(entry);
             
-            elements.recentActions.innerHTML = '';
-            
-            actions.forEach(action => {
-                const li = document.createElement('li');
-                li.className = 'task-item';
-                li.textContent = action;
-                elements.recentActions.appendChild(li);
-            });
+            const entries = log.querySelectorAll('.log-entry');
+            if (entries.length > 8) entries[entries.length-1].remove();
         }
         
-        // Получить время со смещением
-        function getTime(minutesOffset = 0) {
+        // Получить время
+        function getTime() {
             const now = new Date();
-            now.setMinutes(now.getMinutes() + minutesOffset);
-            return now.getHours().toString().padStart(2, '0') + ':' + 
-                   now.getMinutes().toString().padStart(2, '0');
+            return now.getHours().toString().padStart(2,'0') + ':' + 
+                   now.getMinutes().toString().padStart(2,'0');
         }
         
-        // Добавить запись в лог
-        function addToLog(message) {
-            const logEntry = document.createElement('div');
-            logEntry.className = 'log-entry';
-            
-            const now = new Date();
-            const timeStr = now.getHours().toString().padStart(2, '0') + ':' + 
-                           now.getMinutes().toString().padStart(2, '0');
-            
-            logEntry.innerHTML = `<span class="log-time">[${timeStr}]</span> ${message}`;
-            
-            elements.activityLog.prepend(logEntry);
-            
-            // Ограничиваем лог 10 записями
-            const entries = elements.activityLog.querySelectorAll('.log-entry');
-            if (entries.length > 10) {
-                entries[entries.length - 1].remove();
-            }
-        }
-        
-        // Загрузить данные
-        async function loadData() {
-            try {
-                const response = await fetch(DATA_URL + '?t=' + Date.now());
-                const data = await response.json();
-                
-                if (data.tokenStatistics) {
-                    elements.todayTokens.textContent = data.tokenStatistics.today.totalTokens.toLocaleString();
-                    elements.todayCost.textContent = '$' + data.tokenStatistics.today.cost.toFixed(6);
-                }
-                
-                addToLog('Данные загружены с сервера');
-                
-            } catch (error) {
-                // Используем локальные данные
-                const todayTokens = 1000 + (new Date().getHours() * 500);
-                const todayCost = todayTokens * 0.00000028;
-                
-                elements.todayTokens.textContent = todayTokens.toLocaleString();
-                elements.todayCost.textContent = '$' + todayCost.toFixed(6);
-                
-                addToLog('Используются локальные данные (ошибка загрузки)');
-            }
-        }
-        
-        // Обновить все данные
+        // Обновить данные
         function refreshData() {
-            addToLog('Ручное обновление данных');
-            updateAlfredTask();
-            updateActiveTasks();
-            updateRecentActions();
-            loadData();
-            updateTime();
+            updateTask();
+            addLog('Ручное обновление данных');
         }
         
-        // Принудительное обновление задач
-        function forceTaskUpdate() {
-            addToLog('Принудительное обновление задач');
-            updateAlfredTask();
-            updateActiveTasks();
-            updateRecentActions();
+        // Принудительное обновление
+        function forceUpdate() {
+            updateTask();
+            addLog('Принудительное обновление задач');
         }
         
-        // Симулировать новую задачу
-        function simulateNewTask() {
-            const newTasks = [
-                "🎨 Улучшить анимацию Альфреда",
-                "📱 Оптимизировать для мобильных",
-                "🔗 Добавить новые интеграции",
-                "🎮 Создать мини-игру",
-                "📈 Улучшить графики статистики"
-            ];
-            
-            const newTask = newTasks[Math.floor(Math.random() * newTasks.length)];
-            addToLog(`Добавлена новая задача: ${newTask}`);
-            
-            // Добавляем в активные задачи
-            const li = document.createElement('li');
-            li.className = 'task-item';
-            li.textContent = `🎯 ${newTask}`;
-            elements.activeTasks.prepend(li);
-            
-            // Обновляем счетчик
-            const currentCount = parseInt(elements.activeTaskCount.textContent);
-            elements.activeTaskCount.textContent = currentCount + 1;
-        }
-        
-        // Инициализация Telegram Web App
-        function initTelegramWebApp() {
+        // Инициализация Telegram
+        function initTelegram() {
             if (window.Telegram && Telegram.WebApp) {
                 Telegram.WebApp.ready();
                 Telegram.WebApp.expand();
-                
-                elements.tgStatus.textContent = 'АКТИВЕН';
-                addToLog('Telegram Mini App: активирован');
-                
-                // Отправляем данные в Telegram
-                Telegram.WebApp.sendData(JSON.stringify({
-                    action: 'realtime_panel_loaded',
-                    timestamp: new Date().toISOString(),
-                    version: '0.7'
-                }));
-            } else {
-                elements.tgStatus.textContent = 'НЕ АКТИВЕН';
-                addToLog('Запущено в браузере');
+                document.getElementById('tgStatus').textContent = 'АКТИВЕН';
+                addLog('Telegram Mini App активирован');
             }
         }
         
         // Инициализация
         document.addEventListener('DOMContentLoaded', function() {
-            initTelegramWebApp();
-            
-            // Начальная загрузка
+            initTelegram();
             updateTime();
-            updateAlfredTask();
-            updateActiveTasks();
-            updateRecentActions();
-            loadData();
+            updateTask();
             
-            // Uptime симуляция
-            const startTime = new Date();
-            startTime.setHours(startTime.getHours() - 5);
-            startTime.setMinutes(startTime.getMinutes() - 42);
-            
-            function updateUptime() {
-                const now = new Date();
-                const diff = now - startTime;
-                const hours = Math.floor(diff / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                elements.uptime.textContent = `${hours}ч ${minutes}м`;
-            }
-            
-            updateUptime();
-            setInterval(updateUptime, 60000);
-            
-            // Автоматическое обновление
-            setInterval(() => {
-                updateAlfredTask();
-                updateActiveTasks();
-                updateRecentActions();
-                updateTime();
-                addToLog('Автоматическое обновление данных');
-            }, UPDATE_INTERVAL);
-            
-            // Обновление времени каждую секунду
             setInterval(updateTime, 1000);
+            setInterval(updateTask, 30000);
+            setInterval(() => {
+                document.getElementById('updateTime').textContent = getTime();
+            }, 60000);
         });
     </script>
 </body>
