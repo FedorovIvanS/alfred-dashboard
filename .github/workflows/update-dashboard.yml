@@ -1,10 +1,7 @@
 name: Update Alfred Dashboard Data
 
 on:
-  schedule:
-    # Каждые 6 часов (оптимизация использования токенов)
-    - cron: '0 */6 * * *'
-  workflow_dispatch:  # Ручной запуск
+  workflow_dispatch:  # ТОЛЬКО ручной запуск (по запросу)
   push:
     paths:
       - 'scripts/update-data.js'
@@ -223,4 +220,4 @@ jobs:
       if: success()
       run: |
         echo "✅ Dashboard data updated successfully!"
-        echo "Next update in 6 hours"
+        echo "Next update: только по запросу"

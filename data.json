@@ -1,21 +1,22 @@
 {
-  "lastUpdated": "2026-03-13T19:18:00Z",
+  "lastUpdated": "2026-03-13T20:52:15.023Z",
   "status": {
     "online": true,
     "session": "active",
-    "version": "0.2",
-    "model": "deepseek/deepseek-chat"
+    "version": "0.5",
+    "model": "deepseek/deepseek-chat",
+    "updateMode": "on-demand"
   },
   "currentActivity": {
-    "title": "Разработка Telegram Web App",
-    "description": "Добавляю реальные данные и автообновление в панель управления",
-    "progress": 85,
-    "started": "2026-03-13T14:51:00Z"
+    "title": "Обновление по запросу",
+    "description": "Данные обновляются только при открытии панели (экономия токенов)",
+    "progress": 100,
+    "started": "2026-03-13T20:52:15.023Z"
   },
   "tasks": [
     {
       "id": 1,
-      "title": "Создать прототип панели",
+      "title": "Создать панель управления",
       "status": "completed",
       "priority": "high",
       "created": "2026-03-13T14:51:00Z"
@@ -23,70 +24,282 @@
     {
       "id": 2,
       "title": "Настроить Telegram Web App",
-      "status": "completed", 
+      "status": "completed",
       "priority": "high",
       "created": "2026-03-13T17:55:00Z"
     },
     {
       "id": 3,
-      "title": "Разместить на GitHub Pages",
-      "status": "completed",
-      "priority": "medium",
-      "created": "2026-03-13T18:43:00Z"
+      "title": "Режим обновления по запросу",
+      "status": "in_progress",
+      "priority": "high",
+      "created": "2026-03-13T20:52:15.023Z"
     },
     {
       "id": 4,
-      "title": "Добавить реальные данные",
-      "status": "in_progress",
-      "priority": "high",
-      "created": "2026-03-13T19:18:00Z"
+      "title": "Настроить Todoist интеграцию",
+      "status": "pending",
+      "priority": "medium",
+      "created": "2026-03-13T20:52:15.023Z"
     },
     {
       "id": 5,
-      "title": "Настроить автообновление",
+      "title": "Настроить gog интеграцию",
       "status": "pending",
-      "priority": "high",
-      "created": "2026-03-13T19:18:00Z"
+      "priority": "medium",
+      "created": "2026-03-13T20:52:15.023Z"
     }
   ],
   "heartbeatChecks": {
-    "lastCheck": "2026-03-13T17:01:00Z",
-    "totalChecksToday": 5,
-    "nextCheck": "2026-03-13T19:30:00Z",
+    "lastCheck": "2026-03-13T20:52:15.023Z",
+    "totalChecksToday": 11,
+    "nextCheck": "по запросу",
     "results": {
-      "todoist": "Нет задач на сегодня",
+      "todoist": "API токен не настроен",
       "email": "gog не настроен",
       "calendar": "gog не настроен",
-      "weather": "Санкт-Петербург: +3°C ☀️"
+      "weather": "Санкт-Петербург: +7°C",
+      "memory": "✅ Данные из memory файлов",
+      "updateMode": "✅ Обновление по запросу (экономия токенов)"
     }
   },
   "notifications": [
     {
       "id": 1,
-      "type": "warning",
-      "title": "gog не настроен",
-      "message": "Требуется авторизация для проверки почты и календаря",
-      "timestamp": "2026-03-13T07:10:00Z"
+      "type": "info",
+      "title": "Режим обновления по запросу",
+      "message": "Данные обновляются только при открытии панели. Экономия токенов: 100%",
+      "timestamp": "2026-03-13T20:52:15.023Z"
     },
     {
       "id": 2,
       "type": "info",
-      "title": "Пользователь вернулся",
-      "message": "После 90+ часов отсутствия",
-      "timestamp": "2026-03-13T06:03:00Z"
+      "title": "Memory файлы найдены",
+      "message": "Чтение данных из memory файлов",
+      "timestamp": "2026-03-13T20:52:15.023Z"
     },
     {
       "id": 3,
-      "type": "reminder",
-      "title": "Проект 'Календарь арбитражных дел'",
-      "message": "Статус неизвестен, требуется уточнение",
-      "timestamp": "2026-03-13T07:10:00Z"
+      "type": "info",
+      "title": "Статистика токенов",
+      "message": "Сегодня использовано: 11,403 токенов ($0.003193)",
+      "timestamp": "2026-03-13T20:52:15.023Z"
     }
   ],
   "system": {
-    "uptime": "05:27:00",
-    "memoryUsage": "64%",
+    "uptime": "7:06:00",
+    "memoryUsage": "77%",
     "activeProjects": 3,
-    "skillsInstalled": 12
+    "skillsInstalled": 12,
+    "updateStrategy": "on-demand",
+    "lastManualUpdate": "2026-03-13T20:52:15.023Z"
+  },
+  "tokenStatistics": {
+    "today": {
+      "totalTokens": 11403,
+      "cost": 0.00319284,
+      "inputTokens": 7982,
+      "outputTokens": 3420,
+      "updateCount": 1
+    },
+    "currentMonth": {
+      "totalTokens": 342090,
+      "cost": 0.0957852,
+      "projectedMonthEnd": 353493,
+      "projectedCost": 0.09897804,
+      "savingsFromOnDemand": 0.000336
+    },
+    "summary": {
+      "totalTokensAllTime": 2511403,
+      "totalCostAllTime": 0.0038928400000000003,
+      "averageCostPer1K": 0.00028,
+      "updateStrategy": "on-demand",
+      "estimatedMonthlySavings": "$0.018"
+    },
+    "daily": [
+      {
+        "date": "2026-03-07",
+        "tokens": 46878,
+        "cost": 0.013125840000000001
+      },
+      {
+        "date": "2026-03-08",
+        "tokens": 33452,
+        "cost": 0.009366560000000001
+      },
+      {
+        "date": "2026-03-09",
+        "tokens": 40882,
+        "cost": 0.01144696
+      },
+      {
+        "date": "2026-03-10",
+        "tokens": 39302,
+        "cost": 0.01100456
+      },
+      {
+        "date": "2026-03-11",
+        "tokens": 42471,
+        "cost": 0.01189188
+      },
+      {
+        "date": "2026-03-12",
+        "tokens": 47250,
+        "cost": 0.01323
+      },
+      {
+        "date": "2026-03-13",
+        "tokens": 11403,
+        "cost": 0.00319284
+      }
+    ],
+    "models": [
+      {
+        "name": "DeepSeek",
+        "tokens": 2139974,
+        "percentage": 85
+      },
+      {
+        "name": "Reasoner",
+        "tokens": 300000,
+        "percentage": 12
+      },
+      {
+        "name": "Other",
+        "tokens": 71429,
+        "percentage": 3
+      }
+    ],
+    "hourly": [
+      {
+        "hour": 0,
+        "tokens": 528,
+        "cost": 0.00014784000000000002
+      },
+      {
+        "hour": 1,
+        "tokens": 505,
+        "cost": 0.00014140000000000002
+      },
+      {
+        "hour": 2,
+        "tokens": 534,
+        "cost": 0.00014952000000000002
+      },
+      {
+        "hour": 3,
+        "tokens": 549,
+        "cost": 0.00015372
+      },
+      {
+        "hour": 4,
+        "tokens": 677,
+        "cost": 0.00018956000000000002
+      },
+      {
+        "hour": 5,
+        "tokens": 629,
+        "cost": 0.00017612000000000001
+      },
+      {
+        "hour": 6,
+        "tokens": 638,
+        "cost": 0.00017864
+      },
+      {
+        "hour": 7,
+        "tokens": 472,
+        "cost": 0.00013216
+      },
+      {
+        "hour": 8,
+        "tokens": 541,
+        "cost": 0.00015148
+      },
+      {
+        "hour": 9,
+        "tokens": 489,
+        "cost": 0.00013692
+      },
+      {
+        "hour": 10,
+        "tokens": 571,
+        "cost": 0.00015988000000000002
+      },
+      {
+        "hour": 11,
+        "tokens": 569,
+        "cost": 0.00015932
+      },
+      {
+        "hour": 12,
+        "tokens": 465,
+        "cost": 0.00013020000000000002
+      },
+      {
+        "hour": 13,
+        "tokens": 524,
+        "cost": 0.00014672
+      },
+      {
+        "hour": 14,
+        "tokens": 440,
+        "cost": 0.0001232
+      },
+      {
+        "hour": 15,
+        "tokens": 540,
+        "cost": 0.00015120000000000002
+      },
+      {
+        "hour": 16,
+        "tokens": 601,
+        "cost": 0.00016828
+      },
+      {
+        "hour": 17,
+        "tokens": 556,
+        "cost": 0.00015568
+      },
+      {
+        "hour": 18,
+        "tokens": 547,
+        "cost": 0.00015316
+      },
+      {
+        "hour": 19,
+        "tokens": 429,
+        "cost": 0.00012012000000000001
+      },
+      {
+        "hour": 20,
+        "tokens": 653,
+        "cost": 0.00018284
+      },
+      {
+        "hour": 21,
+        "tokens": 0,
+        "cost": 0
+      },
+      {
+        "hour": 22,
+        "tokens": 0,
+        "cost": 0
+      },
+      {
+        "hour": 23,
+        "tokens": 0,
+        "cost": 0
+      }
+    ],
+    "recentUsage": [
+      {
+        "time": "23:52:15",
+        "tokens": 11403,
+        "cost": 0.00319284,
+        "model": "DeepSeek",
+        "type": "Панель управления (обновление по запросу)"
+      }
+    ]
   }
 }

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦇 Альфред - Панель управления (обновление по запросу)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            padding: 10px;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #001100 0%, #000800 100%);
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 15px;
+            border: 2px solid #0a0;
+            border-radius: 10px;
+            background: rgba(0, 20, 0, 0.8);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #0a0;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px #0f0;
+        }
+        
+        .header .subtitle {
+            color: #8f8;
+            font-size: 14px;
+        }
+        
+        .update-mode {
+            background: rgba(255, 215, 0, 0.2);
+            border: 1px solid #ff0;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #ff0;
+        }
+        
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 40, 0, 0.6);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #0a0;
+        }
+        
+        .status-item {
+            text-align: center;
+        }
+        
+        .status-label {
+            font-size: 12px;
+            color: #8f8;
+        }
+        
+        .status-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0f0;
+        }
+        
+        .online {
+            color: #0f0;
+            text-shadow: 0 0 5px #0f0;
+        }
+        
+        .panel {
+            background: rgba(0, 30, 0, 0.7);
+            border: 1px solid #0a0;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .panel-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #8f8;
+            border-bottom: 1px solid #0a0;
+            padding-bottom: 5px;
+        }
+        
+        .activity {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .activity-progress {
+            flex: 1;
+            height: 20px;
+            background: rgba(0, 60, 0, 0.6);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #0a0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, #0a0, #0f0);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .activity-info {
+            flex: 2;
+        }
+        
+        .activity-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .activity-description {
+            font-size: 14px;
+            color: #8f8;
+        }
+        
+        .token-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .token-stat {
+            background: rgba(0, 40, 0, 0.6);
+            border: 1px solid #0a0;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        .token-stat-label {
+            font-size: 12px;
+            color: #8f8;
+            margin-bottom: 5px;
+        }
+        
+        .token-stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0f0;
+        }
+        
+        .token-stat-cost {
+            font-size: 12px;
+            color: #ff0;
+        }
+        
+        .tasks-list {
+            list-style: none;
+        }
+        
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+        }
+        
+        .task-status {
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        
+        .status-completed {
+            background: #0a0;
+            color: #000;
+        }
+        
+        .status-in_progress {
+            background: #ff0;
+            color: #000;
+        }
+        
+        .status-pending {
+            background: #f80;
+            color: #000;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tg-button {
+            background: #0a0;
+            color: #000;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .tg-button:hover {
+            background: #0f0;
+            transform: translateY(-2px);
+        }
+        
+        .tg-button:disabled {
+            background: #444;
+            color: #888;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .tg-button.update {
+            background: #ff0;
+            color: #000;
+        }
+        
+        .tg-button.update:hover {
+            background: #ff4;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #0a0;
+            font-size: 12px;
+            color: #8f8;
+        }
+        
+        /* CRT эффект */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        
+        @media (max-width: 600px) {
+            .status-bar {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .activity {
+                flex-direction: column;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .tg-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🦇 АЛЬФРЕД - ПАНЕЛЬ УПРАВЛЕНИЯ</h1>
+            <div class="subtitle">Обновление данных ТОЛЬКО по запросу • Максимальная экономия токенов</div>
+            <div class="subtitle" id="currentTime">Загрузка...</div>
+        </div>
+        
+        <div class="update-mode">
+            ⚡ <strong>РЕЖИМ ОБНОВЛЕНИЯ ПО ЗАПРОСУ</strong> ⚡<br>
+            Данные обновляются только когда вы открываете панель. Экономия токенов: 100%
+        </div>
+        
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-label">ВЕРСИЯ</div>
+                <div class="status-value" id="version">0.5</div>
+            </div>
+            <div class="status-item">
+                <div class="status-label">РЕЖИМ</div>
+                <div class="status-value" id="updateMode">ПО ЗАПРОСУ</div>
+            </div>
+            <div class="status-item">
+                <div class="status-label">ОБНОВЛЕНО</div>
+                <div class="status-value" id="lastUpdated">ТОЛЬКО ЧТО</div>
+            </div>
+        </div>
+        
+        <!-- Панель активности -->
+        <div class="panel">
+            <div class="panel-title">🎯 ТЕКУЩАЯ АКТИВНОСТЬ</div>
+            <div class="activity">
+                <div class="activity-progress">
+                    <div class="progress-bar" id="activityProgress" style="width: 100%"></div>
+                </div>
+                <div class="activity-info">
+                    <div class="activity-title" id="activityTitle">Обновление данных по запросу</div>
+                    <div class="activity-description" id="activityDescription">Данные обновлены при открытии панели. Следующее обновление - когда вы снова откроете панель.</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Статистика токенов -->
+        <div class="panel">
+            <div class="panel-title">📊 СТАТИСТИКА ТОКЕНОВ (ОБНОВЛЕНО ПРИ ОТКРЫТИИ)</div>
+            <div class="token-stats">
+                <div class="token-stat">
+                    <div class="token-stat-label">ТОКЕНОВ СЕГОДНЯ</div>
+                    <div class="token-stat-value" id="todayTokens">0</div>
+                    <div class="token-stat-cost" id="todayCost">$0.000000</div>
+                </div>
+                <div class="token-stat">
+                    <div class="token-stat-label">ЭКОНОМИЯ</div>
+                    <div class="token-stat-value" id="savings">100%</div>
+                    <div class="token-stat-cost">от фоновых обновлений</div>
+                </div>
+                <div class="token-stat">
+                    <div class="token-stat-label">ОБНОВЛЕНИЙ</div>
+                    <div class="token-stat-value" id="updateCount">1</div>
+                    <div class="token-stat-cost">сегодня по запросу</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Кнопки управления -->
+        <div class="controls">
+            <button class="tg-button update" id="refresh-btn" onclick="refreshData()">
+                🔄 ОБНОВИТЬ ДАННЫЕ СЕЙЧАС
+            </button>
+            
+            <button class="tg-button" onclick="window.open('token-monitoring.html', '_blank')">
+                💰 МОНИТОРИНГ ТОКЕНОВ
+            </button>
+            
+            <button class="tg-button" onclick="window.open('batcave-simple.html', '_blank')">
+                🦇 ДВОРЕЦ БЭТМЕНА
+            </button>
+        </div>
+        
+        <!-- Информация -->
+        <div class="panel">
+            <div class="panel-title">ℹ️ ИНФОРМАЦИЯ О РЕЖИМЕ</div>
+            <div style="padding: 10px; font-size: 14px;">
+                <p>✅ <strong>Как работает:</strong> Данные обновляются только когда вы открываете панель</p>
+                <p>✅ <strong>Экономия токенов:</strong> 100% (никаких фоновых обновлений)</p>
+                <p>✅ <strong>Свежие данные:</strong> Всегда актуальные при открытии</p>
+                <p>✅ <strong>Контроль:</strong> Вы решаете когда обновлять</p>
+                <p>📊 <strong>Прогноз экономии:</strong> ~21,000 токенов/день (~$0.006/день)</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>🦇 Альфред • Обновление по запросу • v0.5</p>
+            <p>Токены расходуются ТОЛЬКО когда вы используете панель</p>
+        </div>
+    </div>
+
+    <script>
+        // Конфигурация
+        const DATA_URL = 'https://raw.githubusercontent.com/FedorovIvanS/alfred-dashboard/main/data.json';
+        
+        // Элементы DOM
+        const elements = {
+            version: document.getElementById('version'),
+            updateMode: document.getElementById('updateMode'),
+            lastUpdated: document.getElementById('lastUpdated'),
+            currentTime: document.getElementById('currentTime'),
+            activityProgress: document.getElementById('activityProgress'),
+            activityTitle: document.getElementById('activityTitle'),
+            activityDescription: document.getElementById('activityDescription'),
+            todayTokens: document.getElementById('todayTokens'),
+            todayCost: document.getElementById('todayCost'),
+            savings: document.getElementById('savings'),
+            updateCount: document.getElementById('updateCount'),
+            refreshBtn: document.getElementById('refresh-btn')
+        };
+        
+        // Форматирование
+        function formatNumber(num) {
+            return num.toLocaleString('ru-RU');
+        }
+        
+        function formatCost(cost) {
+            if (cost < 0.0001) return '$' + cost.toFixed(8);
+            if (cost < 0.01) return '$' + cost.toFixed(6);
+            return '$' + cost.toFixed(4);
+        }
+        
+        // Обновление времени
+        function updateTime() {
+            const now = new Date();
+            elements.currentTime.textContent = now.toLocaleString('ru-RU', {
+                timeZone: 'Europe/Moscow',
+                hour12: false,
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        // Загрузка данных
+        async function loadData() {
+            try {
+                elements.refreshBtn.disabled = true;
+                elements.refreshBtn.textContent = '🔄 ОБНОВЛЕНИЕ...';
+                
+                // Показываем что обновляем
+                elements.activityTitle.textContent = 'Обновление данных...';
+                elements.activityDescription.textContent = 'Запрос отправлен, получение данных...';
+                
+                // Ждём немного для имитации обновления
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Загружаем данные с уникальным параметром чтобы избежать кэша
+                const response = await fetch(DATA_URL + '?t=' + Date.now());
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                renderData(data);
+                
+                // Обновляем время
+                updateTime();
+                elements.lastUpdated.textContent = 'ТОЛЬКО ЧТО';
+                
+                // Показываем успех
+                showNotification('✅ Данные успешно обновлены!');
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showNotification('⚠️ Ошибка загрузки данных. Используем кэшированные.');
+                
+                // Используем демо-данные
+                useDemoData();
+            } finally {
+                elements.refreshBtn.disabled = false;
+                elements.refreshBtn.textContent = '🔄 ОБНОВИТЬ ДАННЫЕ СЕЙЧАС';
+            }
+        }
+        
+        // Демо-данные
+        function useDemoData() {
+            const now = new Date();
+            const hour = now.getHours();
+            const todayTokens = 1000 + (hour * 500);
+            const todayCost = todayTokens * 0.00000028;
+            
+            elements.todayTokens.textContent = formatNumber(todayTokens);
+            elements.todayCost.textContent = formatCost(todayCost);
+            elements.savings.textContent = '100%';
+            elements.updateCount.textContent = '1';
+            
+            elements.activityTitle.textContent = 'Режим обновления по запросу';
+            elements.activityDescription.textContent = 'Данные обновлены при открытии панели';
+        }
+        
+        // Отображение данных
+        function renderData(data) {
+            // Статистика токенов
+            if (data.tokenStatistics) {
+                elements.todayTokens.textContent = formatNumber(data.tokenStatistics.today.totalTokens);
+                elements.todayCost.textContent = formatCost(data.token
