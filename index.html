@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦇 Альфред - Панель управления</title>
+    <style>
+        /* Адаптивный стиль для мобильных */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            padding: 10px;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            border: 2px solid #0a0;
+            padding: 15px;
+            background: #001100;
+            margin-bottom: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #0a0;
+        }
+        
+        .title {
+            font-size: 24px;
+            color: #0f0;
+            margin-bottom: 5px;
+        }
+        
+        .status {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .status-item {
+            margin: 5px 10px;
+        }
+        
+        .panel {
+            border: 1px solid #0a0;
+            padding: 10px;
+            margin-bottom: 15px;
+            background: #002200;
+        }
+        
+        .panel-title {
+            color: #8f8;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .task-list {
+            list-style: none;
+        }
+        
+        .task-item {
+            padding: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #0a0;
+            background: #003300;
+        }
+        
+        .notification {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 2px solid #f00;
+            background: #330000;
+        }
+        
+        .time-display {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #0a0;
+            background: #001100;
+            margin-top: 15px;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 600px) {
+            .title {
+                font-size: 20px;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .status {
+                flex-direction: column;
+            }
+        }
+        
+        /* Telegram Web App специфичные стили */
+        .tg-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #0a0;
+            color: #000;
+            border: none;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+        
+        .tg-button:hover {
+            background: #0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">🦇 АЛЬФРЕД v0.1</h1>
+            <div>Telegram Web App версия</div>
+        </div>
+        
+        <div class="status">
+            <div class="status-item">● ОНЛАЙН</div>
+            <div class="status-item">ВЕРСИЯ: 0.1</div>
+            <div class="status-item" id="current-time">20:22 MSK</div>
+        </div>
+        
+        <div class="panel">
+            <h2 class="panel-title">🎯 ТЕКУЩАЯ АКТИВНОСТЬ</h2>
+            <p>Создаю Telegram Web App версию панели...</p>
+            <p>Статус: <span style="color: #0f0;">В РАБОТЕ</span></p>
+        </div>
+        
+        <div class="panel">
+            <h2 class="panel-title">📋 ЗАДАЧИ</h2>
+            <ul class="task-list">
+                <li class="task-item">✅ Создать прототип панели</li>
+                <li class="task-item">🔄 Настроить Telegram Web App</li>
+                <li class="task-item">⏳ Разместить на GitHub Pages</li>
+                <li class="task-item">📱 Адаптировать для мобильных</li>
+            </ul>
+        </div>
+        
+        <div class="panel">
+            <h2 class="panel-title">⚠️ УВЕДОМЛЕНИЯ</h2>
+            <div class="notification">
+                <strong>gog не настроен</strong><br>
+                Требуется авторизация для проверки почты
+            </div>
+            <div class="notification" style="border-color: #ff0; background: #333300;">
+                <strong>Пользователь вернулся</strong><br>
+                После 90+ часов отсутствия
+            </div>
+        </div>
+        
+        <button class="tg-button" onclick="refreshData()">
+            🔄 ОБНОВИТЬ ДАННЫЕ
+        </button>
+        
+        <div class="time-display">
+            <div>МОСКОВСКОЕ ВРЕМЯ: <span id="time-display">20:22:00</span></div>
+            <div>Telegram Web App | Альфред v0.1</div>
+        </div>
+    </div>
+
+    <script>
+        // Обновление времени
+        function updateTime() {
+            const now = new Date();
+            const mskTime = new Date(now.getTime() + (3 * 60 * 60 * 1000));
+            
+            const timeString = mskTime.toLocaleTimeString('ru-RU', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            
+            document.getElementById('current-time').textContent = timeString.split(':')[0] + ':' + timeString.split(':')[1] + ' MSK';
+            document.getElementById('time-display').textContent = timeString;
+        }
+        
+        // Имитация обновления данных
+        function refreshData() {
+            const button = document.querySelector('.tg-button');
+            const originalText = button.textContent;
+            button.textContent = '🔄 ОБНОВЛЯЕМ...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                button.textContent = '✅ ОБНОВЛЕНО!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.disabled = false;
+                    
+                    // Обновляем время
+                    updateTime();
+                    
+                    // Показываем уведомление
+                    alert('Данные обновлены! Время синхронизировано.');
+                }, 1000);
+            }, 1500);
+        }
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTime();
+            setInterval(updateTime, 1000);
+            
+            // Проверяем, открыто ли в Telegram Web App
+            if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.ready();
+                Telegram.WebApp.expand();
+                
+                // Меняем заголовок
+                document.title = "🦇 Альфред (Telegram)";
+                
+                // Добавляем кнопку закрытия
+                const closeBtn = document.createElement('button');
+                closeBtn.className = 'tg-button';
+                closeBtn.style.background = '#a00';
+                closeBtn.textContent = '✖️ ЗАКРЫТЬ';
+                closeBtn.onclick = function() {
+                    Telegram.WebApp.close();
+                };
+                document.querySelector('.container').appendChild(closeBtn);
+            }
+        });
+    </script>
+</body>
+</html>
