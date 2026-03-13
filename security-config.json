@@ -1,0 +1,67 @@
+{
+  "security": {
+    "version": "1.0",
+    "lastUpdated": "2026-03-13T19:36:00Z",
+    
+    "authentication": {
+      "enabled": true,
+      "method": "telegram_webapp",
+      "requireHTTPS": true,
+      "sessionTimeout": 3600
+    },
+    
+    "dataProtection": {
+      "encryptSensitiveData": true,
+      "maskTokensInLogs": true,
+      "secureCookies": true,
+      "corsOrigins": [
+        "https://fedorovivans.github.io",
+        "https://telegram-web.app"
+      ]
+    },
+    
+    "apiSecurity": {
+      "rateLimiting": {
+        "enabled": true,
+        "requestsPerMinute": 60,
+        "burstLimit": 10
+      },
+      "requestValidation": {
+        "enabled": true,
+        "validateOrigin": true,
+        "validateTimestamp": true
+      }
+    },
+    
+    "contentSecurity": {
+      "csp": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';",
+      "xssProtection": true,
+      "clickjackingProtection": true,
+      "hsts": true
+    },
+    
+    "monitoring": {
+      "logAccess": true,
+      "logErrors": true,
+      "alertOnSuspiciousActivity": true,
+      "retentionDays": 30
+    },
+    
+    "secretsManagement": {
+      "storeInEnvVars": true,
+      "useGitHubSecrets": true,
+      "rotateKeys": {
+        "enabled": true,
+        "intervalDays": 90
+      }
+    }
+  },
+  
+  "recommendations": [
+    "Использовать GitHub Secrets для токенов",
+    "Включить 2FA для GitHub аккаунта",
+    "Регулярно обновлять зависимости",
+    "Мониторить логи доступа",
+    "Использовать разные токены для разных сервисов"
+  ]
+}

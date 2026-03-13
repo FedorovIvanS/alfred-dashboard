@@ -1,342 +1,4 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🦇 Альфред - Панель управления</title>
-    <style>
-        /* Адаптивный стиль для мобильных */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            background: #000;
-            color: #0f0;
-            font-family: 'Courier New', monospace;
-            padding: 10px;
-            max-width: 100%;
-            overflow-x: hidden;
-        }
-        
-        .container {
-            border: 2px solid #0a0;
-            padding: 15px;
-            background: #001100;
-            margin-bottom: 20px;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px dashed #0a0;
-        }
-        
-        .title {
-            font-size: 24px;
-            color: #0f0;
-            margin-bottom: 5px;
-        }
-        
-        .status {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .status-item {
-            margin: 5px 10px;
-        }
-        
-        .online {
-            color: #0f0;
-            animation: blink 1s infinite;
-        }
-        
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        .panel {
-            border: 1px solid #0a0;
-            padding: 10px;
-            margin-bottom: 15px;
-            background: #002200;
-        }
-        
-        .panel-title {
-            color: #8f8;
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
-        
-        .progress-bar {
-            width: 100%;
-            height: 20px;
-            border: 1px solid #0a0;
-            background: #001100;
-            margin: 10px 0;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: #0f0;
-            transition: width 0.5s ease;
-        }
-        
-        .task-list {
-            list-style: none;
-        }
-        
-        .task-item {
-            padding: 8px;
-            margin-bottom: 8px;
-            border: 1px solid #0a0;
-            background: #003300;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .task-status {
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 12px;
-        }
-        
-        .status-completed { background: #0a0; color: #000; }
-        .status-in_progress { background: #ff0; color: #000; }
-        .status-pending { background: #00a; color: #fff; }
-        
-        .notification {
-            padding: 10px;
-            margin-bottom: 10px;
-            border-left: 4px solid #f00;
-            background: #330000;
-        }
-        
-        .notification.info {
-            border-color: #ff0;
-            background: #333300;
-        }
-        
-        .notification.reminder {
-            border-color: #0a0;
-            background: #003300;
-        }
-        
-        .time-display {
-            text-align: center;
-            padding: 10px;
-            border: 1px solid #0a0;
-            background: #001100;
-            margin-top: 15px;
-        }
-        
-        /* Адаптивность */
-        @media (max-width: 600px) {
-            .title {
-                font-size: 20px;
-            }
-            
-            .container {
-                padding: 10px;
-            }
-            
-            .status {
-                flex-direction: column;
-            }
-        }
-        
-        /* Telegram Web App специфичные стили */
-        .tg-button {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            background: #0a0;
-            color: #000;
-            border: none;
-            font-family: 'Courier New', monospace;
-            font-size: 16px;
-            font-weight: bold;
-            text-align: center;
-            margin: 10px 0;
-            cursor: pointer;
-        }
-        
-        .tg-button:hover {
-            background: #0f0;
-        }
-        
-        .tg-button:disabled {
-            background: #444;
-            color: #888;
-            cursor: not-allowed;
-        }
-        
-        .update-info {
-            text-align: center;
-            font-size: 12px;
-            color: #8f8;
-            margin-top: 10px;
-        }
-        
-        .heartbeat-results {
-            font-size: 14px;
-            margin-top: 10px;
-        }
-        
-        .heartbeat-item {
-            padding: 3px 0;
-            border-bottom: 1px dotted #0a0;
-        }
-        
-        .heartbeat-item:last-child {
-            border-bottom: none;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1 class="title">🦇 АЛЬФРЕД v<span id="version">0.2</span></h1>
-            <div>Telegram Web App | Реальные данные</div>
-        </div>
-        
-        <div class="status">
-            <div class="status-item">● <span id="status-online" class="online">ОНЛАЙН</span></div>
-            <div class="status-item">СЕССИЯ: <span id="status-session">АКТИВНА</span></div>
-            <div class="status-item" id="current-time">--:-- MSK</div>
-        </div>
-        
-        <div class="panel">
-            <h2 class="panel-title">🎯 ТЕКУЩАЯ АКТИВНОСТЬ</h2>
-            <div class="progress-bar">
-                <div class="progress-fill" id="activity-progress" style="width: 0%"></div>
-            </div>
-            <p><strong id="activity-title">Загрузка...</strong></p>
-            <p id="activity-description">Получение данных с сервера</p>
-        </div>
-        
-        <div class="panel">
-            <h2 class="panel-title">📋 ЗАДАЧИ (<span id="tasks-count">0</span>)</h2>
-            <ul class="task-list" id="tasks-list">
-                <li class="task-item">Загрузка задач...</li>
-            </ul>
-        </div>
-        
-        <div class="panel">
-            <h2 class="panel-title">⏰ ПОСЛЕДНЯЯ ПРОВЕРКА</h2>
-            <p>Время: <span id="last-check">--:--</span></p>
-            <p>Следующая: <span id="next-check">--:--</span></p>
-            
-            <div class="heartbeat-results" id="heartbeat-results">
-                Загрузка результатов проверки...
-            </div>
-        </div>
-        
-        <div class="panel">
-            <h2 class="panel-title">⚠️ УВЕДОМЛЕНИЯ (<span id="notifications-count">0</span>)</h2>
-            <div id="notifications-list">
-                <div class="notification">Загрузка уведомлений...</div>
-            </div>
-        </div>
-        
-        <button class="tg-button" id="refresh-btn" onclick="refreshData()">
-            🔄 ОБНОВИТЬ ДАННЫЕ
-        </button>
-        
-        <div class="update-info">
-            Последнее обновление: <span id="last-updated">--:--:--</span>
-            <br>Автообновление через: <span id="auto-refresh-timer">60</span> сек
-        </div>
-        
-        <div class="time-display">
-            <div>МОСКОВСКОЕ ВРЕМЯ: <span id="time-display">--:--:--</span></div>
-            <div>ВРЕМЯ РАБОТЫ: <span id="uptime-display">--:--:--</span></div>
-            <div>Telegram Web App | Альфред v<span id="version-display">0.2</span></div>
-        </div>
-    </div>
-
-    <script>
-        // Конфигурация
-        const DATA_URL = 'https://raw.githubusercontent.com/FedorovIvanS/alfred-dashboard/main/data.json';
-        const AUTO_REFRESH_INTERVAL = 60000; // 60 секунд
-        let autoRefreshTimer = AUTO_REFRESH_INTERVAL / 1000;
-        let autoRefreshInterval;
-        
-        // DOM элементы
-        const elements = {
-            version: document.getElementById('version'),
-            statusOnline: document.getElementById('status-online'),
-            statusSession: document.getElementById('status-session'),
-            currentTime: document.getElementById('current-time'),
-            activityProgress: document.getElementById('activity-progress'),
-            activityTitle: document.getElementById('activity-title'),
-            activityDescription: document.getElementById('activity-description'),
-            tasksCount: document.getElementById('tasks-count'),
-            tasksList: document.getElementById('tasks-list'),
-            lastCheck: document.getElementById('last-check'),
-            nextCheck: document.getElementById('next-check'),
-            heartbeatResults: document.getElementById('heartbeat-results'),
-            notificationsCount: document.getElementById('notifications-count'),
-            notificationsList: document.getElementById('notifications-list'),
-            lastUpdated: document.getElementById('last-updated'),
-            autoRefreshTimer: document.getElementById('auto-refresh-timer'),
-            timeDisplay: document.getElementById('time-display'),
-            uptimeDisplay: document.getElementById('uptime-display'),
-            versionDisplay: document.getElementById('version-display'),
-            refreshBtn: document.getElementById('refresh-btn')
-        };
-        
-        // Обновление времени
-        function updateTime() {
-            const now = new Date();
-            const mskTime = new Date(now.getTime() + (3 * 60 * 60 * 1000));
-            
-            const timeString = mskTime.toLocaleTimeString('ru-RU', {
-                hour12: false,
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-            
-            elements.currentTime.textContent = timeString.split(':')[0] + ':' + timeString.split(':')[1] + ' MSK';
-            elements.timeDisplay.textContent = timeString;
-        }
-        
-        // Форматирование времени
-        function formatTime(dateString) {
-            if (!dateString) return '--:--';
-            const date = new Date(dateString);
-            return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-        }
-        
-        // Форматирование даты
-        function formatDateTime(dateString) {
-            if (!dateString) return '--:--:--';
-            const date = new Date(dateString);
-            return date.toLocaleTimeString('ru-RU', { hour12: false });
-        }
-        
-        // Загрузка данных
-        async function loadData() {
-            try {
-                elements.refreshBtn.disabled = true;
-                elements.refreshBtn.textContent = '🔄 ЗАГРУЗКА...';
-                
-                // Добавляем timestamp для избежания кэширования
-                const url = DATA_URL + '?t=' + Date.now();
-                const response = await fetch(url);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+(`HTTP error! status: ${response.status}`);
                 }
                 
                 const data = await response.json();
@@ -372,6 +34,30 @@
             elements.activityTitle.textContent = data.currentActivity.title;
             elements.activityDescription.textContent = data.currentActivity.description;
             
+            // Статистика токенов
+            if (data.tokenStatistics) {
+                const tokens = data.tokenStatistics;
+                
+                // Основные показатели
+                elements.todayTokens.textContent = formatNumber(tokens.today.totalTokens) + ' токенов';
+                elements.todayCost.textContent = formatCost(tokens.today.cost);
+                elements.monthTokens.textContent = formatNumber(tokens.currentMonth.totalTokens) + ' токенов';
+                elements.monthProjection.textContent = formatNumber(tokens.currentMonth.projectedMonthEnd) + ' токенов';
+                elements.totalTokens.textContent = formatNumber(tokens.summary.totalTokensAllTime) + ' токенов';
+                
+                // Диаграммы
+                createDailyChart(tokens.daily);
+                createModelDistribution(tokens.models);
+                
+                // Добавляем информацию о стоимости в задачи
+                if (tokens.today.cost > 0.001) {
+                    const costElement = document.createElement('div');
+                    costElement.className = 'cost-badge';
+                    costElement.textContent = `$${tokens.today.cost.toFixed(4)}`;
+                    elements.todayCost.parentNode.appendChild(costElement);
+                }
+            }
+            
             // Задачи
             elements.tasksCount.textContent = data.tasks.length;
             elements.tasksList.innerHTML = '';
@@ -406,7 +92,8 @@
             let heartbeatHTML = '';
             for (const [key, value] of Object.entries(data.heartbeatChecks.results)) {
                 const icon = value.includes('не настроен') ? '⚠️' : 
-                            value.includes('Нет задач') ? '✅' : 'ℹ️';
+                            value.includes('Нет данных') ? '⚠️' :
+                            value.includes('✅') ? '✅' : 'ℹ️';
                 heartbeatHTML += `
                     <div class="heartbeat-item">
                         ${icon} ${key}: ${value}
@@ -481,7 +168,7 @@
                 Telegram.WebApp.expand();
                 
                 // Меняем заголовок
-                document.title = "🦇 Альфред (Telegram)";
+                document.title = "🦇 Альфред (Telegram) - Статистика токенов";
                 
                 // Добавляем кнопку закрытия
                 const closeBtn = document.createElement('button');
@@ -496,7 +183,8 @@
                 // Отправляем данные в Telegram
                 Telegram.WebApp.sendData(JSON.stringify({
                     action: 'dashboard_loaded',
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    version: '0.4'
                 }));
             }
         }
