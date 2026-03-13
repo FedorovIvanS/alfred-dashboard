@@ -1,0 +1,285 @@
+новых задач",
+                progress: 0,
+                startTime: "21:19",
+                endTime: "--:--",
+                status: "waiting"
+            }
+        ];
+        
+        // Элементы DOM
+        const elements = {
+            currentTime: document.getElementById('currentTime'),
+            alfredStatus: document.getElementById('alfredStatus'),
+            currentTask: document.getElementById('currentTask'),
+            taskDescription: document.getElementById('taskDescription'),
+            progressBar: document.getElementById('progressBar'),
+            progressText: document.getElementById('progressText'),
+            startTime: document.getElementById('startTime'),
+            endTime: document.getElementById('endTime'),
+            todayTokens: document.getElementById('todayTokens'),
+            todayCost: document.getElementById('todayCost'),
+            activeTaskCount: document.getElementById('activeTaskCount'),
+            uptime: document.getElementById('uptime'),
+            tgStatus: document.getElementById('tgStatus'),
+            activityLog: document.getElementById('activityLog'),
+            updateTime: document.getElementById('updateTime'),
+            activeTasks: document.getElementById('activeTasks'),
+            recentActions: document.getElementById('recentActions')
+        };
+        
+        // Открыть страницу в Telegram Mini App
+        function openInTelegram(url) {
+            if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.openLink('https://fedorovivans.github.io/alfred-dashboard/' + url);
+            } else {
+                window.open(url, '_blank');
+            }
+        }
+        
+        // Обновление времени
+        function updateTime() {
+            const now = new Date();
+            elements.currentTime.textContent = now.toLocaleString('ru-RU', {
+                timeZone: 'Europe/Moscow',
+                hour12: false,
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+        
+        // Обновить текущую задачу Альфреда
+        function updateAlfredTask() {
+            currentTaskIndex = (currentTaskIndex + 1) % alfredTasks.length;
+            const task = alfredTasks[currentTaskIndex];
+            
+            // Обновляем элементы
+            elements.currentTask.textContent = task.task;
+            elements.taskDescription.textContent = task.description;
+            elements.progressBar.style.width = task.progress + '%';
+            elements.progressText.textContent = task.progress + '%';
+            elements.startTime.textContent = task.startTime;
+            elements.endTime.textContent = task.endTime;
+            elements.alfredStatus.textContent = task.status.toUpperCase();
+            elements.alfredStatus.className = `activity-status ${task.status}`;
+            
+            // Добавляем в лог
+            const now = new Date();
+            const timeStr = now.getHours().toString().padStart(2, '0') + ':' + 
+                           now.getMinutes().toString().padStart(2, '0');
+            
+            addToLog(`[${timeStr}] Альфред: ${task.task}`);
+            
+            // Обновляем время
+            elements.updateTime.textContent = timeStr;
+        }
+        
+        // Обновить активные задачи
+        function updateActiveTasks() {
+            const tasks = [
+                "✅ Обновить панель управления",
+                "🔄 Проверить данные Todoist",
+                "📊 Анализировать статистику токенов",
+                "🔧 Исправить навигацию в Telegram",
+                "🎯 Добавить реальные данные",
+                "⚡ Оптимизировать производительность",
+                "🔒 Проверить безопасность"
+            ];
+            
+            // Перемешиваем задачи
+            const shuffled = [...tasks].sort(() => Math.random() - 0.5);
+            const activeCount = 3 + Math.floor(Math.random() * 3);
+            
+            elements.activeTasks.innerHTML = '';
+            elements.activeTaskCount.textContent = activeCount;
+            
+            for (let i = 0; i < activeCount; i++) {
+                const li = document.createElement('li');
+                li.className = 'task-item';
+                li.textContent = shuffled[i];
+                elements.activeTasks.appendChild(li);
+            }
+        }
+        
+        // Обновить последние действия
+        function updateRecentActions() {
+            const actions = [
+                `[${getTime()}] Обновление панели`,
+                `[${getTime(-1)}] Проверка Telegram`,
+                `[${getTime(-2)}] Анализ статистики`,
+                `[${getTime(-3)}] Обновление задач`,
+                `[${getTime(-4)}] Проверка системы`
+            ];
+            
+            elements.recentActions.innerHTML = '';
+            
+            actions.forEach(action => {
+                const li = document.createElement('li');
+                li.className = 'task-item';
+                li.textContent = action;
+                elements.recentActions.appendChild(li);
+            });
+        }
+        
+        // Получить время со смещением
+        function getTime(minutesOffset = 0) {
+            const now = new Date();
+            now.setMinutes(now.getMinutes() + minutesOffset);
+            return now.getHours().toString().padStart(2, '0') + ':' + 
+                   now.getMinutes().toString().padStart(2, '0');
+        }
+        
+        // Добавить запись в лог
+        function addToLog(message) {
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            
+            const now = new Date();
+            const timeStr = now.getHours().toString().padStart(2, '0') + ':' + 
+                           now.getMinutes().toString().padStart(2, '0');
+            
+            logEntry.innerHTML = `<span class="log-time">[${timeStr}]</span> ${message}`;
+            
+            elements.activityLog.prepend(logEntry);
+            
+            // Ограничиваем лог 10 записями
+            const entries = elements.activityLog.querySelectorAll('.log-entry');
+            if (entries.length > 10) {
+                entries[entries.length - 1].remove();
+            }
+        }
+        
+        // Загрузить данные
+        async function loadData() {
+            try {
+                const response = await fetch(DATA_URL + '?t=' + Date.now());
+                const data = await response.json();
+                
+                if (data.tokenStatistics) {
+                    elements.todayTokens.textContent = data.tokenStatistics.today.totalTokens.toLocaleString();
+                    elements.todayCost.textContent = '$' + data.tokenStatistics.today.cost.toFixed(6);
+                }
+                
+                addToLog('Данные загружены с сервера');
+                
+            } catch (error) {
+                // Используем локальные данные
+                const todayTokens = 1000 + (new Date().getHours() * 500);
+                const todayCost = todayTokens * 0.00000028;
+                
+                elements.todayTokens.textContent = todayTokens.toLocaleString();
+                elements.todayCost.textContent = '$' + todayCost.toFixed(6);
+                
+                addToLog('Используются локальные данные (ошибка загрузки)');
+            }
+        }
+        
+        // Обновить все данные
+        function refreshData() {
+            addToLog('Ручное обновление данных');
+            updateAlfredTask();
+            updateActiveTasks();
+            updateRecentActions();
+            loadData();
+            updateTime();
+        }
+        
+        // Принудительное обновление задач
+        function forceTaskUpdate() {
+            addToLog('Принудительное обновление задач');
+            updateAlfredTask();
+            updateActiveTasks();
+            updateRecentActions();
+        }
+        
+        // Симулировать новую задачу
+        function simulateNewTask() {
+            const newTasks = [
+                "🎨 Улучшить анимацию Альфреда",
+                "📱 Оптимизировать для мобильных",
+                "🔗 Добавить новые интеграции",
+                "🎮 Создать мини-игру",
+                "📈 Улучшить графики статистики"
+            ];
+            
+            const newTask = newTasks[Math.floor(Math.random() * newTasks.length)];
+            addToLog(`Добавлена новая задача: ${newTask}`);
+            
+            // Добавляем в активные задачи
+            const li = document.createElement('li');
+            li.className = 'task-item';
+            li.textContent = `🎯 ${newTask}`;
+            elements.activeTasks.prepend(li);
+            
+            // Обновляем счетчик
+            const currentCount = parseInt(elements.activeTaskCount.textContent);
+            elements.activeTaskCount.textContent = currentCount + 1;
+        }
+        
+        // Инициализация Telegram Web App
+        function initTelegramWebApp() {
+            if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.ready();
+                Telegram.WebApp.expand();
+                
+                elements.tgStatus.textContent = 'АКТИВЕН';
+                addToLog('Telegram Mini App: активирован');
+                
+                // Отправляем данные в Telegram
+                Telegram.WebApp.sendData(JSON.stringify({
+                    action: 'realtime_panel_loaded',
+                    timestamp: new Date().toISOString(),
+                    version: '0.7'
+                }));
+            } else {
+                elements.tgStatus.textContent = 'НЕ АКТИВЕН';
+                addToLog('Запущено в браузере');
+            }
+        }
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            initTelegramWebApp();
+            
+            // Начальная загрузка
+            updateTime();
+            updateAlfredTask();
+            updateActiveTasks();
+            updateRecentActions();
+            loadData();
+            
+            // Uptime симуляция
+            const startTime = new Date();
+            startTime.setHours(startTime.getHours() - 5);
+            startTime.setMinutes(startTime.getMinutes() - 42);
+            
+            function updateUptime() {
+                const now = new Date();
+                const diff = now - startTime;
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                elements.uptime.textContent = `${hours}ч ${minutes}м`;
+            }
+            
+            updateUptime();
+            setInterval(updateUptime, 60000);
+            
+            // Автоматическое обновление
+            setInterval(() => {
+                updateAlfredTask();
+                updateActiveTasks();
+                updateRecentActions();
+                updateTime();
+                addToLog('Автоматическое обновление данных');
+            }, UPDATE_INTERVAL);
+            
+            // Обновление времени каждую секунду
+            setInterval(updateTime, 1000);
+        });
+    </script>
+</body>
+</html>
