@@ -3,153 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🦇 Альфред - Главная</title>
+    <title>🦇 Альфред - Telegram Mini App</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { background:#000; color:#0f0; font-family:'Courier New'; padding:20px; min-height:100vh; background:#001100; }
+        .container { max-width:600px; margin:0 auto; text-align:center; }
+        .header { margin-bottom:40px; }
+        .header h1 { font-size:32px; margin-bottom:10px; text-shadow:0 0 10px #0f0; }
+        .header .subtitle { color:#8f8; font-size:16px; margin:5px 0; }
         
-        body {
-            background: #000;
-            color: #0f0;
-            font-family: 'Courier New', monospace;
-            padding: 20px;
-            min-height: 100vh;
-            background: linear-gradient(to bottom, #001100 0%, #000800 100%);
-        }
+        .nav-grid { display:grid; grid-template-columns:1fr; gap:15px; margin-bottom:30px; }
+        .nav-card { background:rgba(0,40,0,0.6); border:2px solid #0a0; border-radius:10px; padding:25px; color:#0f0; cursor:pointer; transition:all 0.3s; }
+        .nav-card:hover { background:rgba(0,60,0,0.8); transform:translateY(-5px); }
+        .nav-icon { font-size:40px; margin-bottom:15px; }
+        .nav-title { font-size:20px; font-weight:bold; margin-bottom:10px; }
+        .nav-description { font-size:14px; color:#8f8; }
         
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            text-align: center;
-        }
+        .status { background:rgba(0,30,0,0.7); border:1px solid #0a0; border-radius:10px; padding:20px; margin-bottom:30px; }
+        .status-item { display:flex; justify-content:space-between; margin-bottom:10px; font-size:14px; }
+        .status-label { color:#8f8; }
+        .status-value { color:#0f0; font-weight:bold; }
         
-        .header {
-            margin-bottom: 40px;
-        }
-        
-        .header h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px #0f0;
-        }
-        
-        .header .subtitle {
-            color: #8f8;
-            font-size: 16px;
-        }
-        
-        .nav-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        
-        .nav-card {
-            background: rgba(0, 40, 0, 0.6);
-            border: 2px solid #0a0;
-            border-radius: 10px;
-            padding: 25px;
-            text-decoration: none;
-            color: #0f0;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        
-        .nav-card:hover {
-            background: rgba(0, 60, 0, 0.8);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 255, 0, 0.2);
-        }
-        
-        .nav-icon {
-            font-size: 40px;
-            margin-bottom: 15px;
-        }
-        
-        .nav-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        
-        .nav-description {
-            font-size: 14px;
-            color: #8f8;
-        }
-        
-        .status-bar {
-            background: rgba(0, 30, 0, 0.7);
-            border: 1px solid #0a0;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .status-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-        
-        .status-label {
-            color: #8f8;
-        }
-        
-        .status-value {
-            color: #0f0;
-            font-weight: bold;
-        }
-        
-        .footer {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #0a0;
-            font-size: 12px;
-            color: #8f8;
-        }
-        
-        /* CRT эффект */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 2px, 3px 100%;
-            pointer-events: none;
-            z-index: 9999;
-        }
-        
-        @media (max-width: 600px) {
-            .nav-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .nav-card {
-                padding: 20px;
-            }
-        }
+        .footer { margin-top:30px; padding-top:20px; border-top:1px solid #0a0; font-size:12px; color:#8f8; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>🦇 АЛЬФРЕД</h1>
-            <div class="subtitle">Личный ассистент • Telegram Mini App • Обновление по запросу</div>
+            <div class="subtitle">Telegram Mini App • Оптимизированная версия</div>
+            <div class="subtitle">Только нужные функции • Работает в России</div>
             <div class="subtitle" id="currentTime">Загрузка...</div>
         </div>
         
-        <div class="status-bar">
+        <div class="status">
             <div class="status-item">
-                <span class="status-label">Версия системы:</span>
-                <span class="status-value" id="version">0.6</span>
+                <span class="status-label">Версия:</span>
+                <span class="status-value" id="version">1.0</span>
             </div>
             <div class="status-item">
                 <span class="status-label">Режим обновления:</span>
@@ -161,51 +51,49 @@
             </div>
             <div class="status-item">
                 <span class="status-label">Telegram Mini App:</span>
-                <span class="status-value" id="tgStatus">АКТИВНА</span>
+                <span class="status-value" id="tgStatus">АКТИВЕН</span>
             </div>
         </div>
         
         <div class="nav-grid">
-            <div class="nav-card" onclick="openInTelegram('index-minimal.html')">
+            <div class="nav-card" onclick="openInTelegram('index-realtime.html')">
                 <div class="nav-icon">📊</div>
-                <div class="nav-title">ОСНОВНАЯ ПАНЕЛЬ</div>
-                <div class="nav-description">Статус системы, статистика токенов, быстрые действия</div>
+                <div class="nav-title">ПАНЕЛЬ В РЕАЛЬНОМ ВРЕМЕНИ</div>
+                <div class="nav-description">Видите чем занят Альфред прямо сейчас</div>
+            </div>
+            
+            <div class="nav-card" onclick="openInTelegram('batcave-final.html')">
+                <div class="nav-icon">🏰</div>
+                <div class="nav-title">ДВОРЕЦ БЭТМЕНА</div>
+                <div class="nav-description">Финальная версия - всё работает в Telegram</div>
             </div>
             
             <div class="nav-card" onclick="openInTelegram('token-minimal.html')">
                 <div class="nav-icon">💰</div>
                 <div class="nav-title">МОНИТОРИНГ ТОКЕНОВ</div>
-                <div class="nav-description">Детальная статистика использования, графики, стоимость</div>
-            </div>
-            
-            <div class="nav-card" onclick="openInTelegram('batcave-improved.html')">
-                <div class="nav-icon">🏰</div>
-                <div class="nav-title">ДВОРЕЦ БЭТМЕНА</div>
-                <div class="nav-description">Улучшенная анимация Альфреда (работает/ждёт/патрулирует)</div>
+                <div class="nav-description">Статистика использования и стоимости</div>
             </div>
             
             <div class="nav-card" onclick="openInTelegram('batcave-simple.html')">
                 <div class="nav-icon">🎮</div>
                 <div class="nav-title">УПРОЩЁННАЯ ВЕРСИЯ</div>
-                <div class="nav-description">Быстрая версия с базовой анимацией Альфреда</div>
+                <div class="nav-description">Быстрая версия для мобильных</div>
             </div>
         </div>
         
         <div class="footer">
-            <p>🦇 Альфред • Все страницы открываются внутри Telegram Mini App</p>
-            <p>Экономия токенов: 100% (обновление только по запросу)</p>
-            <p>GitHub Pages • Telegram Web App • v0.6</p>
+            <p>🦇 Альфред • Оптимизированная версия • Telegram Mini App</p>
+            <p>Экономия токенов: 100% • Обновление только по запросу</p>
+            <p>Работает в России • v1.0</p>
         </div>
     </div>
 
     <script>
-        // Открыть страницу в Telegram Mini App
+        // Открыть в Telegram Mini App
         function openInTelegram(url) {
             if (window.Telegram && Telegram.WebApp) {
-                // В Telegram открываем внутри Mini App
                 Telegram.WebApp.openLink('https://fedorovivans.github.io/alfred-dashboard/' + url);
             } else {
-                // Вне Telegram открываем в новой вкладке
                 window.open(url, '_blank');
             }
         }
@@ -226,26 +114,12 @@
                 });
         }
         
-        // Инициализация Telegram Web App
-        function initTelegramWebApp() {
+        // Инициализация Telegram
+        function initTelegram() {
             if (window.Telegram && Telegram.WebApp) {
                 Telegram.WebApp.ready();
                 Telegram.WebApp.expand();
-                
-                // Меняем заголовок
-                document.title = "🦇 Альфред - Главная";
-                
-                // Обновляем статус
-                document.getElementById('tgStatus').textContent = 'АКТИВНА';
-                
-                // Отправляем данные в Telegram
-                Telegram.WebApp.sendData(JSON.stringify({
-                    action: 'main_page_loaded',
-                    timestamp: new Date().toISOString(),
-                    version: '0.6'
-                }));
-            } else {
-                document.getElementById('tgStatus').textContent = 'НЕ АКТИВНА';
+                document.getElementById('tgStatus').textContent = 'АКТИВЕН';
             }
         }
         
@@ -254,23 +128,19 @@
             try {
                 const response = await fetch('https://raw.githubusercontent.com/FedorovIvanS/alfred-dashboard/main/data.json?t=' + Date.now());
                 const data = await response.json();
-                
                 if (data.status) {
                     document.getElementById('version').textContent = data.status.version;
                 }
-                
             } catch (error) {
-                console.log('Не удалось загрузить данные, используем локальные');
+                console.log('Используем локальные данные');
             }
         }
         
         // Инициализация
         document.addEventListener('DOMContentLoaded', function() {
-            initTelegramWebApp();
+            initTelegram();
             updateTime();
             loadData();
-            
-            // Обновляем время каждую минуту
             setInterval(updateTime, 60000);
         });
     </script>
