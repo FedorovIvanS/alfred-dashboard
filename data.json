@@ -1,8 +1,8 @@
 {
   "meta": {
     "version": "1.0",
-    "updatedAt": "2026-03-13T22:07:11.117Z",
-    "updatedAtMSK": "2026-03-14T01:07:11.117Z",
+    "updatedAt": "2026-03-13T22:16:15.988Z",
+    "updatedAtMSK": "2026-03-14T01:16:15.988Z",
     "updateMode": "on-demand",
     "source": "optimized-script"
   },
@@ -14,23 +14,23 @@
     "version": "1.0"
   },
   "currentActivity": {
-    "title": "Анализ статистики токенов",
-    "description": "Расчёт использования токенов за сегодня",
-    "progress": 40,
+    "title": "Обновление панели управления",
+    "description": "Альфред обновляет данные на панели и проверяет систему",
+    "progress": 75,
     "status": "working",
-    "startTime": "2026-03-13T22:02:11.144Z",
-    "estimatedEnd": "2026-03-13T22:15:11.144Z"
+    "startTime": "2026-03-13T22:01:16.021Z",
+    "estimatedEnd": "2026-03-13T22:21:16.021Z"
   },
   "tokenStatistics": {
     "today": {
-      "totalTokens": 13659,
-      "cost": 0.00382452,
+      "totalTokens": 11769,
+      "cost": 0.00329532,
       "updateCount": 1,
-      "lastUpdate": "2026-03-13T22:07:11.144Z"
+      "lastUpdate": "2026-03-13T22:16:16.021Z"
     },
     "tomorrow": {
-      "estimatedTokens": 15326,
-      "estimatedCost": 0.004291280000000001
+      "estimatedTokens": 13112,
+      "estimatedCost": 0.0036713600000000002
     },
     "savings": {
       "percentage": 100,
@@ -45,7 +45,7 @@
       "description": "Добавить реальные данные и оптимизировать",
       "status": "in_progress",
       "priority": "high",
-      "createdAt": "2026-03-13T21:37:11.144Z"
+      "createdAt": "2026-03-13T21:46:16.021Z"
     },
     {
       "id": 2,
@@ -53,8 +53,8 @@
       "description": "Исправить навигацию и обновление данных",
       "status": "completed",
       "priority": "high",
-      "createdAt": "2026-03-13T21:22:11.144Z",
-      "completedAt": "2026-03-13T22:07:11.144Z"
+      "createdAt": "2026-03-13T21:31:16.021Z",
+      "completedAt": "2026-03-13T22:16:16.021Z"
     },
     {
       "id": 3,
@@ -62,7 +62,7 @@
       "description": "Графики использования и стоимости",
       "status": "in_progress",
       "priority": "medium",
-      "createdAt": "2026-03-13T21:07:11.144Z"
+      "createdAt": "2026-03-13T21:16:16.021Z"
     },
     {
       "id": 4,
@@ -70,7 +70,7 @@
       "description": "Решить проблему с доступностью GitHub Pages",
       "status": "pending",
       "priority": "high",
-      "createdAt": "2026-03-13T21:52:11.144Z"
+      "createdAt": "2026-03-13T22:01:16.021Z"
     }
   ],
   "systemInfo": {
