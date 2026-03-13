@@ -52,6 +52,16 @@
             margin: 5px 10px;
         }
         
+        .online {
+            color: #0f0;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
         .panel {
             border: 1px solid #0a0;
             padding: 10px;
@@ -65,6 +75,21 @@
             font-size: 18px;
         }
         
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            border: 1px solid #0a0;
+            background: #001100;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #0f0;
+            transition: width 0.5s ease;
+        }
+        
         .task-list {
             list-style: none;
         }
@@ -74,13 +99,36 @@
             margin-bottom: 8px;
             border: 1px solid #0a0;
             background: #003300;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
+        
+        .task-status {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        .status-completed { background: #0a0; color: #000; }
+        .status-in_progress { background: #ff0; color: #000; }
+        .status-pending { background: #00a; color: #fff; }
         
         .notification {
             padding: 10px;
             margin-bottom: 10px;
-            border: 2px solid #f00;
+            border-left: 4px solid #f00;
             background: #330000;
+        }
+        
+        .notification.info {
+            border-color: #ff0;
+            background: #333300;
+        }
+        
+        .notification.reminder {
+            border-color: #0a0;
+            background: #003300;
         }
         
         .time-display {
@@ -125,60 +173,128 @@
         .tg-button:hover {
             background: #0f0;
         }
+        
+        .tg-button:disabled {
+            background: #444;
+            color: #888;
+            cursor: not-allowed;
+        }
+        
+        .update-info {
+            text-align: center;
+            font-size: 12px;
+            color: #8f8;
+            margin-top: 10px;
+        }
+        
+        .heartbeat-results {
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        .heartbeat-item {
+            padding: 3px 0;
+            border-bottom: 1px dotted #0a0;
+        }
+        
+        .heartbeat-item:last-child {
+            border-bottom: none;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1 class="title">🦇 АЛЬФРЕД v0.1</h1>
-            <div>Telegram Web App версия</div>
+            <h1 class="title">🦇 АЛЬФРЕД v<span id="version">0.2</span></h1>
+            <div>Telegram Web App | Реальные данные</div>
         </div>
         
         <div class="status">
-            <div class="status-item">● ОНЛАЙН</div>
-            <div class="status-item">ВЕРСИЯ: 0.1</div>
-            <div class="status-item" id="current-time">20:22 MSK</div>
+            <div class="status-item">● <span id="status-online" class="online">ОНЛАЙН</span></div>
+            <div class="status-item">СЕССИЯ: <span id="status-session">АКТИВНА</span></div>
+            <div class="status-item" id="current-time">--:-- MSK</div>
         </div>
         
         <div class="panel">
             <h2 class="panel-title">🎯 ТЕКУЩАЯ АКТИВНОСТЬ</h2>
-            <p>Создаю Telegram Web App версию панели...</p>
-            <p>Статус: <span style="color: #0f0;">В РАБОТЕ</span></p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="activity-progress" style="width: 0%"></div>
+            </div>
+            <p><strong id="activity-title">Загрузка...</strong></p>
+            <p id="activity-description">Получение данных с сервера</p>
         </div>
         
         <div class="panel">
-            <h2 class="panel-title">📋 ЗАДАЧИ</h2>
-            <ul class="task-list">
-                <li class="task-item">✅ Создать прототип панели</li>
-                <li class="task-item">🔄 Настроить Telegram Web App</li>
-                <li class="task-item">⏳ Разместить на GitHub Pages</li>
-                <li class="task-item">📱 Адаптировать для мобильных</li>
+            <h2 class="panel-title">📋 ЗАДАЧИ (<span id="tasks-count">0</span>)</h2>
+            <ul class="task-list" id="tasks-list">
+                <li class="task-item">Загрузка задач...</li>
             </ul>
         </div>
         
         <div class="panel">
-            <h2 class="panel-title">⚠️ УВЕДОМЛЕНИЯ</h2>
-            <div class="notification">
-                <strong>gog не настроен</strong><br>
-                Требуется авторизация для проверки почты
-            </div>
-            <div class="notification" style="border-color: #ff0; background: #333300;">
-                <strong>Пользователь вернулся</strong><br>
-                После 90+ часов отсутствия
+            <h2 class="panel-title">⏰ ПОСЛЕДНЯЯ ПРОВЕРКА</h2>
+            <p>Время: <span id="last-check">--:--</span></p>
+            <p>Следующая: <span id="next-check">--:--</span></p>
+            
+            <div class="heartbeat-results" id="heartbeat-results">
+                Загрузка результатов проверки...
             </div>
         </div>
         
-        <button class="tg-button" onclick="refreshData()">
+        <div class="panel">
+            <h2 class="panel-title">⚠️ УВЕДОМЛЕНИЯ (<span id="notifications-count">0</span>)</h2>
+            <div id="notifications-list">
+                <div class="notification">Загрузка уведомлений...</div>
+            </div>
+        </div>
+        
+        <button class="tg-button" id="refresh-btn" onclick="refreshData()">
             🔄 ОБНОВИТЬ ДАННЫЕ
         </button>
         
+        <div class="update-info">
+            Последнее обновление: <span id="last-updated">--:--:--</span>
+            <br>Автообновление через: <span id="auto-refresh-timer">60</span> сек
+        </div>
+        
         <div class="time-display">
-            <div>МОСКОВСКОЕ ВРЕМЯ: <span id="time-display">20:22:00</span></div>
-            <div>Telegram Web App | Альфред v0.1</div>
+            <div>МОСКОВСКОЕ ВРЕМЯ: <span id="time-display">--:--:--</span></div>
+            <div>ВРЕМЯ РАБОТЫ: <span id="uptime-display">--:--:--</span></div>
+            <div>Telegram Web App | Альфред v<span id="version-display">0.2</span></div>
         </div>
     </div>
 
     <script>
+        // Конфигурация
+        const DATA_URL = 'https://raw.githubusercontent.com/FedorovIvanS/alfred-dashboard/main/data.json';
+        const AUTO_REFRESH_INTERVAL = 60000; // 60 секунд
+        let autoRefreshTimer = AUTO_REFRESH_INTERVAL / 1000;
+        let autoRefreshInterval;
+        
+        // DOM элементы
+        const elements = {
+            version: document.getElementById('version'),
+            statusOnline: document.getElementById('status-online'),
+            statusSession: document.getElementById('status-session'),
+            currentTime: document.getElementById('current-time'),
+            activityProgress: document.getElementById('activity-progress'),
+            activityTitle: document.getElementById('activity-title'),
+            activityDescription: document.getElementById('activity-description'),
+            tasksCount: document.getElementById('tasks-count'),
+            tasksList: document.getElementById('tasks-list'),
+            lastCheck: document.getElementById('last-check'),
+            nextCheck: document.getElementById('next-check'),
+            heartbeatResults: document.getElementById('heartbeat-results'),
+            notificationsCount: document.getElementById('notifications-count'),
+            notificationsList: document.getElementById('notifications-list'),
+            lastUpdated: document.getElementById('last-updated'),
+            autoRefreshTimer: document.getElementById('auto-refresh-timer'),
+            timeDisplay: document.getElementById('time-display'),
+            uptimeDisplay: document.getElementById('uptime-display'),
+            versionDisplay: document.getElementById('version-display'),
+            refreshBtn: document.getElementById('refresh-btn')
+        };
+        
         // Обновление времени
         function updateTime() {
             const now = new Date();
@@ -191,38 +307,175 @@
                 second: '2-digit'
             });
             
-            document.getElementById('current-time').textContent = timeString.split(':')[0] + ':' + timeString.split(':')[1] + ' MSK';
-            document.getElementById('time-display').textContent = timeString;
+            elements.currentTime.textContent = timeString.split(':')[0] + ':' + timeString.split(':')[1] + ' MSK';
+            elements.timeDisplay.textContent = timeString;
         }
         
-        // Имитация обновления данных
+        // Форматирование времени
+        function formatTime(dateString) {
+            if (!dateString) return '--:--';
+            const date = new Date(dateString);
+            return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+        }
+        
+        // Форматирование даты
+        function formatDateTime(dateString) {
+            if (!dateString) return '--:--:--';
+            const date = new Date(dateString);
+            return date.toLocaleTimeString('ru-RU', { hour12: false });
+        }
+        
+        // Загрузка данных
+        async function loadData() {
+            try {
+                elements.refreshBtn.disabled = true;
+                elements.refreshBtn.textContent = '🔄 ЗАГРУЗКА...';
+                
+                // Добавляем timestamp для избежания кэширования
+                const url = DATA_URL + '?t=' + Date.now();
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                renderData(data);
+                
+                // Обновляем время последнего обновления
+                const now = new Date();
+                elements.lastUpdated.textContent = now.toLocaleTimeString('ru-RU', { hour12: false });
+                
+                // Сбрасываем таймер автообновления
+                resetAutoRefreshTimer();
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showError('Ошибка загрузки данных. Проверьте соединение.');
+            } finally {
+                elements.refreshBtn.disabled = false;
+                elements.refreshBtn.textContent = '🔄 ОБНОВИТЬ ДАННЫЕ';
+            }
+        }
+        
+        // Отображение данных
+        function renderData(data) {
+            // Статус
+            elements.version.textContent = data.status.version;
+            elements.versionDisplay.textContent = data.status.version;
+            elements.statusOnline.textContent = data.status.online ? 'ОНЛАЙН' : 'ОФФЛАЙН';
+            elements.statusOnline.className = data.status.online ? 'online' : '';
+            elements.statusSession.textContent = data.status.session === 'active' ? 'АКТИВНА' : 'НЕАКТИВНА';
+            
+            // Активность
+            elements.activityProgress.style.width = data.currentActivity.progress + '%';
+            elements.activityTitle.textContent = data.currentActivity.title;
+            elements.activityDescription.textContent = data.currentActivity.description;
+            
+            // Задачи
+            elements.tasksCount.textContent = data.tasks.length;
+            elements.tasksList.innerHTML = '';
+            
+            data.tasks.forEach(task => {
+                const li = document.createElement('li');
+                li.className = 'task-item';
+                
+                const statusText = {
+                    'completed': '✅',
+                    'in_progress': '🔄',
+                    'pending': '⏳'
+                }[task.status] || '📝';
+                
+                li.innerHTML = `
+                    <div>
+                        ${statusText} ${task.title}
+                    </div>
+                    <span class="task-status status-${task.status}">
+                        ${task.status === 'completed' ? 'ВЫПОЛНЕНО' : 
+                          task.status === 'in_progress' ? 'В РАБОТЕ' : 'ОЖИДАЕТ'}
+                    </span>
+                `;
+                
+                elements.tasksList.appendChild(li);
+            });
+            
+            // Heartbeat проверки
+            elements.lastCheck.textContent = formatTime(data.heartbeatChecks.lastCheck);
+            elements.nextCheck.textContent = formatTime(data.heartbeatChecks.nextCheck);
+            
+            let heartbeatHTML = '';
+            for (const [key, value] of Object.entries(data.heartbeatChecks.results)) {
+                const icon = value.includes('не настроен') ? '⚠️' : 
+                            value.includes('Нет задач') ? '✅' : 'ℹ️';
+                heartbeatHTML += `
+                    <div class="heartbeat-item">
+                        ${icon} ${key}: ${value}
+                    </div>
+                `;
+            }
+            elements.heartbeatResults.innerHTML = heartbeatHTML;
+            
+            // Уведомления
+            elements.notificationsCount.textContent = data.notifications.length;
+            elements.notificationsList.innerHTML = '';
+            
+            data.notifications.forEach(notification => {
+                const div = document.createElement('div');
+                div.className = `notification ${notification.type}`;
+                
+                const icon = {
+                    'warning': '⚠️',
+                    'info': 'ℹ️',
+                    'reminder': '📅'
+                }[notification.type] || '📌';
+                
+                div.innerHTML = `
+                    <strong>${icon} ${notification.title}</strong><br>
+                    ${notification.message}<br>
+                    <small>${formatTime(notification.timestamp)}</small>
+                `;
+                
+                elements.notificationsList.appendChild(div);
+            });
+            
+            // Система
+            elements.uptimeDisplay.textContent = data.system.uptime;
+            
+            // Время обновления
+            elements.lastUpdated.textContent = formatDateTime(data.lastUpdated);
+        }
+        
+        // Показать ошибку
+        function showError(message) {
+            elements.tasksList.innerHTML = `<li class="task-item" style="color:#f88">❌ ${message}</li>`;
+        }
+        
+        // Обновление данных (публичная функция для кнопки)
         function refreshData() {
-            const button = document.querySelector('.tg-button');
-            const originalText = button.textContent;
-            button.textContent = '🔄 ОБНОВЛЯЕМ...';
-            button.disabled = true;
-            
-            setTimeout(() => {
-                button.textContent = '✅ ОБНОВЛЕНО!';
-                setTimeout(() => {
-                    button.textContent = originalText;
-                    button.disabled = false;
-                    
-                    // Обновляем время
-                    updateTime();
-                    
-                    // Показываем уведомление
-                    alert('Данные обновлены! Время синхронизировано.');
-                }, 1000);
-            }, 1500);
+            loadData();
         }
         
-        // Инициализация
-        document.addEventListener('DOMContentLoaded', function() {
-            updateTime();
-            setInterval(updateTime, 1000);
-            
-            // Проверяем, открыто ли в Telegram Web App
+        // Таймер автообновления
+        function startAutoRefreshTimer() {
+            autoRefreshInterval = setInterval(() => {
+                autoRefreshTimer--;
+                elements.autoRefreshTimer.textContent = autoRefreshTimer;
+                
+                if (autoRefreshTimer <= 0) {
+                    loadData();
+                }
+            }, 1000);
+        }
+        
+        function resetAutoRefreshTimer() {
+            clearInterval(autoRefreshInterval);
+            autoRefreshTimer = AUTO_REFRESH_INTERVAL / 1000;
+            elements.autoRefreshTimer.textContent = autoRefreshTimer;
+            startAutoRefreshTimer();
+        }
+        
+        // Инициализация Telegram Web App
+        function initTelegramWebApp() {
             if (window.Telegram && Telegram.WebApp) {
                 Telegram.WebApp.ready();
                 Telegram.WebApp.expand();
@@ -239,7 +492,23 @@
                     Telegram.WebApp.close();
                 };
                 document.querySelector('.container').appendChild(closeBtn);
+                
+                // Отправляем данные в Telegram
+                Telegram.WebApp.sendData(JSON.stringify({
+                    action: 'dashboard_loaded',
+                    timestamp: new Date().toISOString()
+                }));
             }
+        }
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTime();
+            setInterval(updateTime, 1000);
+            
+            initTelegramWebApp();
+            loadData();
+            startAutoRefreshTimer();
         });
     </script>
 </body>

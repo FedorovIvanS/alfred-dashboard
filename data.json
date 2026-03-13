@@ -1,0 +1,92 @@
+{
+  "lastUpdated": "2026-03-13T19:18:00Z",
+  "status": {
+    "online": true,
+    "session": "active",
+    "version": "0.2",
+    "model": "deepseek/deepseek-chat"
+  },
+  "currentActivity": {
+    "title": "Разработка Telegram Web App",
+    "description": "Добавляю реальные данные и автообновление в панель управления",
+    "progress": 85,
+    "started": "2026-03-13T14:51:00Z"
+  },
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Создать прототип панели",
+      "status": "completed",
+      "priority": "high",
+      "created": "2026-03-13T14:51:00Z"
+    },
+    {
+      "id": 2,
+      "title": "Настроить Telegram Web App",
+      "status": "completed", 
+      "priority": "high",
+      "created": "2026-03-13T17:55:00Z"
+    },
+    {
+      "id": 3,
+      "title": "Разместить на GitHub Pages",
+      "status": "completed",
+      "priority": "medium",
+      "created": "2026-03-13T18:43:00Z"
+    },
+    {
+      "id": 4,
+      "title": "Добавить реальные данные",
+      "status": "in_progress",
+      "priority": "high",
+      "created": "2026-03-13T19:18:00Z"
+    },
+    {
+      "id": 5,
+      "title": "Настроить автообновление",
+      "status": "pending",
+      "priority": "high",
+      "created": "2026-03-13T19:18:00Z"
+    }
+  ],
+  "heartbeatChecks": {
+    "lastCheck": "2026-03-13T17:01:00Z",
+    "totalChecksToday": 5,
+    "nextCheck": "2026-03-13T19:30:00Z",
+    "results": {
+      "todoist": "Нет задач на сегодня",
+      "email": "gog не настроен",
+      "calendar": "gog не настроен",
+      "weather": "Санкт-Петербург: +3°C ☀️"
+    }
+  },
+  "notifications": [
+    {
+      "id": 1,
+      "type": "warning",
+      "title": "gog не настроен",
+      "message": "Требуется авторизация для проверки почты и календаря",
+      "timestamp": "2026-03-13T07:10:00Z"
+    },
+    {
+      "id": 2,
+      "type": "info",
+      "title": "Пользователь вернулся",
+      "message": "После 90+ часов отсутствия",
+      "timestamp": "2026-03-13T06:03:00Z"
+    },
+    {
+      "id": 3,
+      "type": "reminder",
+      "title": "Проект 'Календарь арбитражных дел'",
+      "message": "Статус неизвестен, требуется уточнение",
+      "timestamp": "2026-03-13T07:10:00Z"
+    }
+  ],
+  "system": {
+    "uptime": "05:27:00",
+    "memoryUsage": "64%",
+    "activeProjects": 3,
+    "skillsInstalled": 12
+  }
+}
