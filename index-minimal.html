@@ -44,9 +44,9 @@
         <div class="panel">
             <h3>🔗 БЫСТРЫЕ ССЫЛКИ</h3>
             <div style="text-align:center;">
-                <button onclick="window.open('token-monitoring.html')">💰 МОНИТОРИНГ ТОКЕНОВ</button>
-                <button onclick="window.open('batcave-fixed.html')">🏰 ДВОРЕЦ БЭТМЕНА</button>
-                <button onclick="window.open('batcave-simple.html')">🎮 УПРОЩЁННАЯ ВЕРСИЯ</button>
+                <button onclick="openInTelegram('token-minimal.html')">💰 МОНИТОРИНГ ТОКЕНОВ</button>
+                <button onclick="openInTelegram('batcave-improved.html')">🏰 ДВОРЕЦ БЭТМЕНА</button>
+                <button onclick="openInTelegram('batcave-simple.html')">🎮 УПРОЩЁННАЯ ВЕРСИЯ</button>
                 <button onclick="loadData()" style="background:#ff0;">🔄 ОБНОВИТЬ ДАННЫЕ</button>
             </div>
         </div>
@@ -96,6 +96,17 @@
             const now = new Date();
             document.getElementById('time').textContent = 
                 now.toLocaleTimeString('ru-RU', { hour12: false, timeZone: 'Europe/Moscow' });
+        }
+        
+        // Открыть страницу в Telegram Mini App
+        function openInTelegram(url) {
+            if (window.Telegram && Telegram.WebApp) {
+                // В Telegram открываем внутри Mini App
+                Telegram.WebApp.openLink('https://fedorovivans.github.io/alfred-dashboard/' + url);
+            } else {
+                // Вне Telegram открываем в новой вкладке
+                window.open(url, '_blank');
+            }
         }
         
         // Сообщение

@@ -149,8 +149,9 @@
             <button onclick="setMode('wait')">⏳ ЖДАТЬ</button>
             <button onclick="setMode('patrol')">🚶 ПАТРУЛИРОВАТЬ</button>
             <button onclick="toggleLights()">💡 СВЕТ</button>
-            <button onclick="window.open('index.html', '_blank')">📊 ПАНЕЛЬ</button>
-            <button onclick="window.open('token-monitoring.html', '_blank')">💰 ТОКЕНЫ</button>
+            <button onclick="openInTelegram('index-minimal.html')">📊 ПАНЕЛЬ</button>
+            <button onclick="openInTelegram('token-minimal.html')">💰 ТОКЕНЫ</button>
+            <button onclick="openInTelegram('batcave-improved.html')">🎨 УЛУЧШЕННАЯ</button>
             <button onclick="closeApp()" style="background:#a00;">✖️ ЗАКРЫТЬ</button>
         </div>
         
@@ -225,6 +226,15 @@
             
             // Обновляем лог
             document.getElementById('log').innerHTML = logEntries.join('<br>');
+        }
+        
+        // Открыть страницу в Telegram Mini App
+        function openInTelegram(url) {
+            if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.openLink('https://fedorovivans.github.io/alfred-dashboard/' + url);
+            } else {
+                window.open(url, '_blank');
+            }
         }
         
         function closeApp() {

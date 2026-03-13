@@ -42,8 +42,9 @@
         
         <div style="margin:20px 0;">
             <button onclick="loadData()">🔄 ОБНОВИТЬ ДАННЫЕ</button>
-            <button onclick="window.open('index-minimal.html')">📊 ОСНОВНАЯ ПАНЕЛЬ</button>
-            <button onclick="window.open('batcave-simple.html')">🏰 ДВОРЕЦ БЭТМЕНА</button>
+            <button onclick="openInTelegram('index-minimal.html')">📊 ОСНОВНАЯ ПАНЕЛЬ</button>
+            <button onclick="openInTelegram('batcave-improved.html')">🏰 ДВОРЕЦ БЭТМЕНА</button>
+            <button onclick="openInTelegram('batcave-simple.html')">🎮 УПРОЩЁННАЯ</button>
             <button onclick="closeApp()" style="background:#a00;">✖️ ЗАКРЫТЬ</button>
         </div>
         
@@ -109,6 +110,15 @@
                     min-width:3px;
                 `;
                 chart.appendChild(bar);
+            }
+        }
+        
+        // Открыть страницу в Telegram Mini App
+        function openInTelegram(url) {
+            if (window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.openLink('https://fedorovivans.github.io/alfred-dashboard/' + url);
+            } else {
+                window.open(url, '_blank');
             }
         }
         
