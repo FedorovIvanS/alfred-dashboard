@@ -1,8 +1,8 @@
 {
   "meta": {
     "version": "1.0",
-    "updatedAt": "2026-03-13T21:52:06.955Z",
-    "updatedAtMSK": "2026-03-14T00:52:06.955Z",
+    "updatedAt": "2026-03-13T21:59:09.204Z",
+    "updatedAtMSK": "2026-03-14T00:59:09.204Z",
     "updateMode": "on-demand",
     "source": "optimized-script"
   },
@@ -18,19 +18,19 @@
     "description": "Альфред готов к выполнению новых задач",
     "progress": 0,
     "status": "waiting",
-    "startTime": "2026-03-13T21:52:06.983Z",
+    "startTime": "2026-03-13T21:59:09.230Z",
     "estimatedEnd": null
   },
   "tokenStatistics": {
     "today": {
-      "totalTokens": 9796,
-      "cost": 0.00274288,
+      "totalTokens": 12897,
+      "cost": 0.0036111600000000004,
       "updateCount": 1,
-      "lastUpdate": "2026-03-13T21:52:06.983Z"
+      "lastUpdate": "2026-03-13T21:59:09.230Z"
     },
     "tomorrow": {
-      "estimatedTokens": 11094,
-      "estimatedCost": 0.00310632
+      "estimatedTokens": 15121,
+      "estimatedCost": 0.004233880000000001
     },
     "savings": {
       "percentage": 100,
@@ -45,7 +45,7 @@
       "description": "Добавить реальные данные и оптимизировать",
       "status": "in_progress",
       "priority": "high",
-      "createdAt": "2026-03-13T21:22:06.983Z"
+      "createdAt": "2026-03-13T21:29:09.230Z"
     },
     {
       "id": 2,
@@ -53,8 +53,8 @@
       "description": "Исправить навигацию и обновление данных",
       "status": "completed",
       "priority": "high",
-      "createdAt": "2026-03-13T21:07:06.983Z",
-      "completedAt": "2026-03-13T21:52:06.983Z"
+      "createdAt": "2026-03-13T21:14:09.230Z",
+      "completedAt": "2026-03-13T21:59:09.230Z"
     },
     {
       "id": 3,
@@ -62,7 +62,7 @@
       "description": "Графики использования и стоимости",
       "status": "in_progress",
       "priority": "medium",
-      "createdAt": "2026-03-13T20:52:06.983Z"
+      "createdAt": "2026-03-13T20:59:09.230Z"
     },
     {
       "id": 4,
@@ -70,7 +70,7 @@
       "description": "Решить проблему с доступностью GitHub Pages",
       "status": "pending",
       "priority": "high",
-      "createdAt": "2026-03-13T21:37:06.983Z"
+      "createdAt": "2026-03-13T21:44:09.230Z"
     }
   ],
   "systemInfo": {
